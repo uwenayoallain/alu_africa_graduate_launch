@@ -1,0 +1,26 @@
+.DS_Store
+.idea/
+.vscode/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+
+# The full survey is reproducibly downloaded and is too large for GitHub.
+summative/data/raw/
+summative/data/uploads/
+
+# Flutter build and editor output.
+summative/FlutterApp/.dart_tool/
+summative/FlutterApp/.flutter-plugins*
+summative/FlutterApp/build/
+summative/FlutterApp/android/.gradle/
+summative/FlutterApp/ios/Pods/
+
+# Local environment configuration.
+.env
+summative/.env
+
+# Kept locally for recording preparation; not part of the submission repository.
+VIDEO_DEMO_SCRIPT.md
