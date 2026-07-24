@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: alu-africa-graduate-launch
+    runtime: python
+    plan: free
+    rootDir: summative
+    buildCommand: pip install "uv==0.11.32" && uv sync --frozen --no-dev
+    startCommand: uv run --frozen --no-dev uvicorn API.prediction:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.3
+      - key: UV_VERSION
+        value: 0.11.32
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: RETRAIN_API_KEY
+        generateValue: true
