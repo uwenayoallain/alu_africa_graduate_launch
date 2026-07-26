@@ -1,5 +1,3 @@
-"""Download the Stutern Nigerian Graduate Report survey from Kaggle."""
-
 from __future__ import annotations
 
 import shutil

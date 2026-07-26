@@ -11,19 +11,18 @@ The project uses the real [Nigerian Graduate Report 2018 survey](https://www.kag
 published by Stutern. The source contains **5,219 recent Nigerian graduates and
 36 variables**. After keeping respondents with a reported first-employment
 income and engineering the modelling fields, the included Africa-specific
-dataset has **1,656 rows and 13 columns**; 277 rows describe technology or
+dataset has **1,655 rows and 12 columns**; 277 rows describe technology or
 telecommunications pathways.
 
 The continuous target is the midpoint of the respondent's first monthly income
 band, measured in **2018 Nigerian naira (NGN)**. Predictors cover graduation
 year, education, course group, first-job level and sector, qualification
-requirements, NYSC entry, employer-valued experience, course preparation, and
-employability skills.
+requirements, NYSC entry, course preparation, and employability skills.
 
 The notebook explains every transformation. Sensitive gender data, timestamps,
-free-text answers, identifiers, current salary, and post-outcome variables are
-dropped to reduce leakage and avoid turning a program-planning tool into a
-demographic valuation tool. Categorical fields are one-hot encoded and every
+free-text answers, identifiers, current salary, current-job answers, and other
+post-outcome variables are dropped to reduce leakage. Exact duplicate source
+submissions are also removed. Categorical fields are one-hot encoded and every
 numeric input is standardized inside leakage-safe scikit-learn pipelines.
 
 This is Nigerian evidence, not a representative sample of every African
@@ -38,7 +37,7 @@ labour-force microdata.
 
 - target and predictor distributions with written interpretations;
 - a numeric correlation heatmap;
-- income comparisons by first-job sector and employer-valued factor;
+- income comparisons by first-job sector and course-preparation score;
 - feature-engineering, encoding, standardization, and leakage decisions;
 - Ordinary Linear Regression, tuned SGD Linear Regression, Decision Tree, and
   Random Forest implementations;
@@ -52,13 +51,13 @@ metrics.
 
 | Model | Test RMSE (NGN) | Test MAE (NGN) | R² |
 |---|---:|---:|---:|
-| Ordinary Linear Regression | **43,830.24** | **30,329.20** | **0.132** |
-| SGD Linear Regression | 43,900.98 | 30,378.74 | 0.129 |
-| Random Forest | 44,474.95 | 30,638.19 | 0.106 |
-| Decision Tree | 46,868.47 | 32,641.04 | 0.008 |
-| Median baseline | 50,561.61 | 29,066.27 | -0.155 |
+| SGD Linear Regression | **43,319.95** | **29,811.88** | **0.137** |
+| Ordinary Linear Regression | 43,792.38 | 29,979.49 | 0.118 |
+| Random Forest | 43,799.25 | 30,071.36 | 0.118 |
+| Decision Tree | 46,110.43 | 32,351.24 | 0.023 |
+| Median baseline | 50,049.82 | 28,731.12 | -0.152 |
 
-Ordinary Linear Regression is saved because it has the lowest test RMSE.
+The tuned SGD Linear Regression is saved because it has the lowest test RMSE.
 Its low R² shows that the survey features explain only a modest share of
 individual income variation. The model improves RMSE over the baseline but not
 MAE, so it is useful as a broad cohort benchmark rather than a precise promise.
@@ -78,14 +77,13 @@ Example request:
 ```json
 {
   "graduation_year": 2017,
-  "education_level": "bachelors",
-  "course_group": "technology",
-  "first_job_level": "entry",
-  "first_job_sector": "technology_telecommunications",
-  "qualification_requirement": "degree_related",
-  "first_job_via_nysc": 0,
-  "employer_valued_factor": "internship_practical_experience",
-  "course_preparation_score": 4,
+  "education_level": "Bachelor's degree",
+  "course_group": "Technology and computing",
+  "first_job_level": "Entry level",
+  "first_job_sector": "Technology and telecommunications",
+  "qualification_requirement": "Gave an advantage",
+  "first_job_via_nysc": "No",
+  "course_preparation_score": 3,
   "employability_skill_count": 5,
   "problem_solving_skill": 1,
   "communication_skill": 1
@@ -151,10 +149,10 @@ uv run pytest -q
 
 ## Model retraining
 
-`POST /retrain` accepts a labelled CSV containing the 12 public input columns
+`POST /retrain` accepts a labelled CSV containing the 11 public input columns
 plus `first_monthly_income_ngn`. It validates the schema, appends valid new
-rows, retrains and compares all four algorithms, atomically replaces the
-lowest-RMSE artifact, and reloads the model without restarting the service.
+rows, retrains and compares all four algorithms, saves the lowest-RMSE model,
+and reloads it without restarting the service.
 
 When `RETRAIN_API_KEY` is configured, callers must send it as
 `X-Retrain-Key`. Uploads are limited to 5 MB, only CSV is accepted, and the
@@ -182,7 +180,7 @@ flutter run --dart-define=API_BASE_URL=http://10.0.2.2:8000
 ```
 
 For a physical device or production build, replace the URL with the publicly
-routable Render service. The one-page app contains exactly 12 model inputs, a
+routable Render service. The one-page app contains exactly 11 model inputs, a
 `Predict` button, validation, loading feedback, and a prediction/error display.
 
 ## Deploy to Render

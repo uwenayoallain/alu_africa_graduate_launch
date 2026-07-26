@@ -1,5 +1,3 @@
-"""Manual fallback for retraining the deployed model."""
-
 import sys
 from pathlib import Path
 
