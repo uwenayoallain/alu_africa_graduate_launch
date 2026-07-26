@@ -1,0 +1,60 @@
+{
+  "model_name": "LinearRegression",
+  "model_version": "20260726T141357Z",
+  "trained_at": "2026-07-26T14:13:57.250651+00:00",
+  "selection_metric": "lowest held-out RMSE in 2018 Nigerian naira",
+  "training_rows": 1324,
+  "test_rows": 332,
+  "total_rows": 1656,
+  "target": "first_monthly_income_ngn",
+  "features": [
+    "graduation_year",
+    "education_level",
+    "course_group",
+    "first_job_level",
+    "first_job_sector",
+    "qualification_requirement",
+    "first_job_via_nysc",
+    "employer_valued_factor",
+    "course_preparation_score",
+    "employability_skill_count",
+    "problem_solving_skill",
+    "communication_skill"
+  ],
+  "metrics": {
+    "LinearRegression": {
+      "rmse_ngn": 43830.23524377829,
+      "mae_ngn": 30329.203392115207,
+      "r2": 0.1320380328101023
+    },
+    "SGDRegressor": {
+      "rmse_ngn": 43900.9773637605,
+      "mae_ngn": 30378.744834296176,
+      "r2": 0.12923398577036294
+    },
+    "DecisionTreeRegressor": {
+      "rmse_ngn": 46868.47345269872,
+      "mae_ngn": 32641.04115905941,
+      "r2": 0.007536121868959911
+    },
+    "RandomForestRegressor": {
+      "rmse_ngn": 44474.954153182494,
+      "mae_ngn": 30638.1905732867,
+      "r2": 0.10631573709665587
+    }
+  },
+  "baseline": {
+    "training_median_ngn": 35000.0,
+    "test_median_baseline": {
+      "rmse_ngn": 50561.60503400241,
+      "mae_ngn": 29066.265060240963,
+      "r2": -0.15503407285955806
+    }
+  },
+  "limitations": [
+    "The online survey is self-selected and is not a census of Nigerian graduates.",
+    "Income was reported in ranges and converted to documented band midpoints.",
+    "The 2018 naira benchmark is historical and must not be treated as a current salary quote.",
+    "Nigeria provides African evidence, but results cannot represent every African country."
+  ]
+}
