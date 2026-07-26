@@ -1,78 +1,72 @@
 # African Graduate Launch Benchmark
 
-> Our mission is to help young Africans enter technology through practical training, internships, and mentorship.
-> This project studies how education, job-ready skills, and first-job pathways relate to graduate income.
-> It estimates a historical first-employment income benchmark for program planning, not a person's worth.
-> The evidence can help youth programs prioritize experiences that make the transition into work more effective.
+> Our mission is to help young Africans enter technology through practical learning and career support.
+> Many graduates struggle to connect education and employability skills with their first job.
+> This project studies how education, skills, and first-job pathways relate to early income.
+> The result is a planning benchmark for youth programs, not a judgement about a person.
 
 ## Dataset
 
-The project uses the real [Nigerian Graduate Report 2018 survey](https://www.kaggle.com/datasets/stutern/nigerian-gradaute-report-2018)
-published by Stutern. The source contains **5,219 recent Nigerian graduates and
-36 variables**. After keeping respondents with a reported first-employment
-income and engineering the modelling fields, the included Africa-specific
-dataset has **1,655 rows and 12 columns**; 277 rows describe technology or
-telecommunications pathways.
+The project uses the real
+[Nigerian Graduate Report 2018](https://www.kaggle.com/datasets/stutern/nigerian-gradaute-report-2018)
+published by Stutern. It contains thousands of graduate responses covering
+education, employment, skills, job level, sector, and income. The prepared data
+used by this project is available in
+[`summative/data/nigerian_graduate_first_income.csv`](summative/data/nigerian_graduate_first_income.csv).
 
-The continuous target is the midpoint of the respondent's first monthly income
-band, measured in **2018 Nigerian naira (NGN)**. Predictors cover graduation
-year, education, course group, first-job level and sector, qualification
-requirements, NYSC entry, course preparation, and employability skills.
+The regression target is the graduate's first monthly income in 2018 Nigerian
+naira. Because the survey reports income ranges, each range is converted to its
+midpoint. The model uses graduation year, education level, course group,
+first-job level and sector, qualification requirement, NYSC pathway, course
+preparation, and employability skills.
 
-The notebook explains every transformation. Sensitive gender data, timestamps,
-free-text answers, identifiers, current salary, current-job answers, and other
-post-outcome variables are dropped to reduce leakage. Exact duplicate source
-submissions are also removed. Categorical fields are one-hot encoded and every
-numeric input is standardized inside leakage-safe scikit-learn pipelines.
+The notebook explains the feature engineering. Identifiers, free text, gender,
+current salary, current-job answers, and other information collected after the
+first-job outcome are excluded. Categorical values are one-hot encoded and
+numeric values are standardized inside the model pipeline.
 
-This is Nigerian evidence, not a representative sample of every African
-country. Income is self-reported and banded, and the survey is historical.
-Predictions must therefore be interpreted as pathway benchmarks. A future
-upgrade can retrain the same architecture with authenticated 2024 national
-labour-force microdata.
+## Important limitations
 
-## Visual analysis and model comparison
+- The survey is Nigeria-specific and cannot represent every African country.
+- The data is historical and should not be read as a current salary guide.
+- Income midpoints approximate ranges; they are not exact salaries.
+- The online survey is self-reported and may not represent every graduate.
+- The low R² shows that many important income factors are not available.
+- The prediction is useful for comparing broad pathways, not deciding who
+  deserves an opportunity or guaranteeing individual income.
 
-`summative/linear_regression/multivariate.ipynb` includes:
+## Notebook and models
 
-- target and predictor distributions with written interpretations;
-- a numeric correlation heatmap;
-- income comparisons by first-job sector and course-preparation score;
-- feature-engineering, encoding, standardization, and leakage decisions;
-- Ordinary Linear Regression, tuned SGD Linear Regression, Decision Tree, and
-  Random Forest implementations;
-- SGD train and test loss curves;
-- before/after scatter plots with a fitted linear projection; and
-- one held-out-row prediction using the saved best model.
+The executed notebook is
+[`summative/linear_regression/multivariate.ipynb`](summative/linear_regression/multivariate.ipynb).
+It includes data checks, feature interpretation, a target distribution,
+correlation heatmap, pathway comparisons, standardization, loss curves, a
+fitted-line projection, and a prediction for one held-out row.
 
-Lowest held-out RMSE is the primary selection rule because large income errors
-are especially costly for planning. MAE and R² are reported as supporting
-metrics.
+Four scikit-learn models are compared with the same train/test split:
 
-| Model | Test RMSE (NGN) | Test MAE (NGN) | R² |
+| Model | RMSE | MAE | R² |
 |---|---:|---:|---:|
-| SGD Linear Regression | **43,319.95** | **29,811.88** | **0.137** |
-| Ordinary Linear Regression | 43,792.38 | 29,979.49 | 0.118 |
-| Random Forest | 43,799.25 | 30,071.36 | 0.118 |
-| Decision Tree | 46,110.43 | 32,351.24 | 0.023 |
-| Median baseline | 50,049.82 | 28,731.12 | -0.152 |
+| SGD Linear Regression | **≈ ₦43,320** | **≈ ₦29,812** | **0.137** |
+| Ordinary Linear Regression | ≈ ₦43,792 | ≈ ₦29,979 | 0.118 |
+| Random Forest | ≈ ₦43,799 | ≈ ₦30,071 | 0.118 |
+| Decision Tree | ≈ ₦46,110 | ≈ ₦32,351 | 0.023 |
+| Median baseline | ≈ ₦50,050 | ≈ ₦28,731 | -0.152 |
 
-The tuned SGD Linear Regression is saved because it has the lowest test RMSE.
-Its low R² shows that the survey features explain only a modest share of
-individual income variation. The model improves RMSE over the baseline but not
-MAE, so it is useful as a broad cohort benchmark rather than a precise promise.
+RMSE and MAE are prediction errors, so lower values are better. R² shows how
+much variation the model explains, so higher values are better. Tuned SGD
+Linear Regression is saved because it has the lowest test RMSE.
 
-## Public API
+## API
 
-Swagger UI: **`https://REPLACE-WITH-YOUR-RENDER-SERVICE.onrender.com/docs`**
+The FastAPI service provides:
 
-Prediction endpoint:
+- `GET /health` — confirms that the saved model is loaded.
+- `POST /predict` — validates inputs and returns a prediction.
+- `POST /retrain` — accepts a labelled CSV and trains the models again.
+- `GET /docs` — opens the Swagger UI.
 
-```text
-POST https://REPLACE-WITH-YOUR-RENDER-SERVICE.onrender.com/predict
-```
-
-Example request:
+Example prediction:
 
 ```json
 {
@@ -85,17 +79,62 @@ Example request:
   "first_job_via_nysc": "No",
   "course_preparation_score": 3,
   "employability_skill_count": 5,
-  "problem_solving_skill": 1,
-  "communication_skill": 1
+  "problem_solving_skill": true,
+  "communication_skill": true
 }
 ```
 
-Each field has an enforced Pydantic type, realistic range or enum, and a
-description visible in Swagger. The response returns a predicted historical
-monthly income in 2018 NGN, the matching survey band, model details, and an
-interpretation warning.
+Pydantic enforces the datatype and accepted range or category for every field.
+The retraining endpoint validates the uploaded columns and compares all four
+models again before replacing the saved model. On Render, include the generated
+retraining key in the `X-Retrain-Key` header.
 
-## Repository layout
+## CORS
+
+CORS uses explicit origins instead of `*`. It permits the Render service,
+configured origins, and local development origins. Only `GET`, `POST`, and
+`OPTIONS` are allowed. Credentials are disabled because the API does not use
+browser cookies or sessions.
+
+## Run the API
+
+Requirements: Python and [uv](https://docs.astral.sh/uv/).
+
+```bash
+cd summative
+uv sync
+uv run uvicorn API.prediction:app --reload
+```
+
+Open <http://127.0.0.1:8000/docs>.
+
+## Deploy on Render
+
+The included [`render.yaml`](render.yaml) deploys the API from the `summative`
+directory.
+
+1. Create a Render Blueprint from this GitHub repository.
+2. Wait for the `/health` check to pass.
+3. Open `https://YOUR-SERVICE.onrender.com/docs`.
+4. Test a valid request and invalid datatype, range, and missing-field requests.
+5. Replace the placeholder below and use the same service URL in Flutter.
+
+Public Swagger URL:
+**`https://REPLACE-WITH-YOUR-RENDER-SERVICE.onrender.com/docs`**
+
+## Run the Flutter app
+
+```bash
+cd summative/FlutterApp
+flutter pub get
+flutter run --dart-define=API_BASE_URL=http://10.0.2.2:8000
+```
+
+For the submitted mobile build, replace the local address with the Render
+service URL. The single page has one input control for every model feature, a
+`Predict` button, validation, and a prediction or error display.
+
+## Project structure
 
 ```text
 summative/
@@ -106,99 +145,19 @@ summative/
 │   ├── training.py
 │   └── config.py
 ├── FlutterApp/
-├── data/africa_graduate_first_income.csv
+├── data/nigerian_graduate_first_income.csv
 ├── models/
-├── scripts/
-├── tests/
+│   ├── best_model.joblib
+│   └── model_metadata.json
 ├── pyproject.toml
 ├── uv.lock
 └── requirements.txt
 ```
 
-## Run the Python project
-
-Requirements: Python 3.12 and [uv](https://docs.astral.sh/uv/).
-
-```bash
-cd summative
-uv sync
-uv run uvicorn API.prediction:app --reload
-```
-
-Open <http://127.0.0.1:8000/docs>.
-
-Reproduce the data and models:
-
-```bash
-uv run python scripts/download_data.py
-uv run python scripts/prepare_data.py
-uv run python scripts/retrain.py
-uv run python scripts/build_notebook.py
-```
-
-The download command uses the Kaggle API and requires Kaggle credentials.
-The prepared modelling CSV is committed so the notebook, API, and tests run
-without downloading the raw survey.
-
-Verify:
-
-```bash
-uv run ruff check API scripts tests
-uv run pytest -q
-```
-
-## Model retraining
-
-`POST /retrain` accepts a labelled CSV containing the 11 public input columns
-plus `first_monthly_income_ngn`. It validates the schema, appends valid new
-rows, retrains and compares all four algorithms, saves the lowest-RMSE model,
-and reloads it without restarting the service.
-
-When `RETRAIN_API_KEY` is configured, callers must send it as
-`X-Retrain-Key`. Uploads are limited to 5 MB, only CSV is accepted, and the
-combined valid dataset must contain at least 1,000 rows. Manual fallback:
-
-```bash
-uv run python scripts/retrain.py
-```
-
-## CORS reasoning
-
-CORS uses exact origins instead of `*`. It permits origins supplied through
-`ALLOWED_ORIGINS`, the Render service origin, and local Flutter-web development
-origins. Only `GET`, `POST`, and `OPTIONS` methods and `Content-Type` and
-`X-Retrain-Key` headers are accepted. Credentials are disabled because the API
-does not use browser cookies or session authentication. Native Flutter is not
-restricted by browser CORS, but these rules protect Swagger and any web client.
-
-## Run the Flutter mobile app
-
-```bash
-cd summative/FlutterApp
-flutter pub get
-flutter run --dart-define=API_BASE_URL=http://10.0.2.2:8000
-```
-
-For a physical device or production build, replace the URL with the publicly
-routable Render service. The one-page app contains exactly 11 model inputs, a
-`Predict` button, validation, loading feedback, and a prediction/error display.
-
-## Deploy to Render
-
-1. Push the repository to GitHub.
-2. Create a Render Blueprint from the repository.
-3. Render reads `render.yaml`, uses `summative` as its root, and checks
-   `/health`.
-4. Set any additional exact browser origins in `ALLOWED_ORIGINS`.
-5. Test a valid request plus datatype, range, and missing-field errors at
-   `/docs`.
-6. Replace the public URL placeholders in this README and the Flutter build.
-
-## Video demonstration
+## Video
 
 YouTube: **`https://youtube.com/REPLACE-WITH-YOUR-VIDEO`**
 
-Keep the recording at seven minutes or less. Keep the camera on and the entire
-screen shared. Demonstrate the mobile prediction and Swagger tests within the
-first two minutes, then explain the notebook, loss, model choice,
-hyperparameters, retraining, and CORS decisions.
+The video must stay within seven minutes, show the mobile app and public
+Swagger tests within the first two minutes, and explain the notebook, model
+loss, hyperparameters, retraining, and CORS decisions.
