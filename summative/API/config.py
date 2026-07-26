@@ -1,4 +1,4 @@
-PUBLIC_FEATURES = [
+MODEL_FEATURES = [
     "graduation_year",
     "education_level",
     "course_group",
@@ -12,7 +12,6 @@ PUBLIC_FEATURES = [
     "communication_skill",
 ]
 
-MODEL_FEATURES = PUBLIC_FEATURES
 TARGET = "first_monthly_income_ngn"
 
 NUMERIC_FEATURES = [

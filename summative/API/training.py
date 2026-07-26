@@ -32,10 +32,9 @@ from API.config import (
 )
 
 PROJECT_DIR = Path(__file__).resolve().parents[1]
-DATA_PATH = PROJECT_DIR / "data" / "africa_graduate_first_income.csv"
+DATA_PATH = PROJECT_DIR / "data" / "nigerian_graduate_first_income.csv"
 MODEL_PATH = PROJECT_DIR / "models" / "best_model.joblib"
 METADATA_PATH = PROJECT_DIR / "models" / "model_metadata.json"
-LOSS_CURVE_PATH = PROJECT_DIR / "models" / "sgd_loss_curve.csv"
 RANDOM_STATE = 42
 MIN_INCOME = 10_000.0
 MAX_INCOME = 275_000.0
@@ -246,9 +245,6 @@ def train_and_save(data: pd.DataFrame | None = None) -> dict[str, Any]:
         metrics[name] = calculate_metrics(y_test, pipeline.predict(x_test))
 
     best_name = min(metrics, key=lambda name: metrics[name]["rmse_ngn"])
-    loss_curve = build_sgd_loss_curve(x_train, x_test, y_train, y_test)
-    LOSS_CURVE_PATH.parent.mkdir(parents=True, exist_ok=True)
-    loss_curve.to_csv(LOSS_CURVE_PATH, index=False)
     joblib.dump(trained[best_name], MODEL_PATH)
 
     timestamp = datetime.now(UTC)

@@ -1,7 +1,7 @@
 {
   "model_name": "SGDRegressor",
-  "model_version": "20260726T162940Z",
-  "trained_at": "2026-07-26T16:29:40.832915+00:00",
+  "model_version": "20260726T170100Z",
+  "trained_at": "2026-07-26T17:01:00.326827+00:00",
   "selection_metric": "lowest held-out RMSE in 2018 Nigerian naira",
   "training_rows": 1324,
   "test_rows": 331,

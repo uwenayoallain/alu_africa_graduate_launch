@@ -5,7 +5,6 @@ import json
 import os
 import threading
 from contextlib import asynccontextmanager
-from pathlib import Path
 from typing import Annotated, Any
 
 import joblib
@@ -13,7 +12,7 @@ import pandas as pd
 from fastapi import FastAPI, File, Header, HTTPException, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
 
-from API.config import MODEL_FEATURES, PUBLIC_FEATURES, TARGET
+from API.config import MODEL_FEATURES, TARGET
 from API.schemas import (
     HealthResponse,
     PredictionRequest,
@@ -89,17 +88,6 @@ def income_band(prediction: float) -> str:
     return "₦250,000 and above"
 
 
-@app.get("/", tags=["Service"])
-def root() -> dict[str, str]:
-    return {
-        "name": "African Graduate Launch API",
-        "documentation": "/docs",
-        "health": "/health",
-        "prediction": "POST /predict",
-        "retraining": "POST /retrain",
-    }
-
-
 @app.get("/health", response_model=HealthResponse, tags=["Service"])
 def health() -> HealthResponse:
     metadata = model_state.get("metadata", {})
@@ -163,7 +151,7 @@ def retrain(
         except Exception as exc:
             raise HTTPException(status_code=422, detail=f"Could not parse CSV: {exc}") from exc
 
-        required = set(PUBLIC_FEATURES + [TARGET])
+        required = set(MODEL_FEATURES + [TARGET])
         missing = required - set(new_rows.columns)
         if missing:
             raise HTTPException(
@@ -190,7 +178,3 @@ def retrain(
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     finally:
         retrain_lock.release()
-
-
-def model_artifact_paths() -> tuple[Path, Path]:
-    return MODEL_PATH, METADATA_PATH
