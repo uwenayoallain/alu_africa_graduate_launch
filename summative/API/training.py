@@ -1,10 +1,6 @@
-"""Training, comparison, persistence, and loss-curve utilities."""
-
 from __future__ import annotations
 
 import json
-import os
-import tempfile
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -22,7 +18,18 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.tree import DecisionTreeRegressor
 
-from API.config import CATEGORICAL_FEATURES, MODEL_FEATURES, NUMERIC_FEATURES, TARGET
+from API.config import (
+    CATEGORICAL_FEATURES,
+    COURSE_GROUPS,
+    EDUCATION_LEVELS,
+    JOB_LEVELS,
+    MODEL_FEATURES,
+    NUMERIC_FEATURES,
+    NYSC_PATHWAYS,
+    QUALIFICATION_REQUIREMENTS,
+    SECTOR_GROUPS,
+    TARGET,
+)
 
 PROJECT_DIR = Path(__file__).resolve().parents[1]
 DATA_PATH = PROJECT_DIR / "data" / "africa_graduate_first_income.csv"
@@ -32,6 +39,24 @@ LOSS_CURVE_PATH = PROJECT_DIR / "models" / "sgd_loss_curve.csv"
 RANDOM_STATE = 42
 MIN_INCOME = 10_000.0
 MAX_INCOME = 275_000.0
+
+CATEGORY_RULES = {
+    "education_level": EDUCATION_LEVELS,
+    "course_group": COURSE_GROUPS,
+    "first_job_level": JOB_LEVELS,
+    "first_job_sector": SECTOR_GROUPS,
+    "qualification_requirement": QUALIFICATION_REQUIREMENTS,
+    "first_job_via_nysc": NYSC_PATHWAYS,
+}
+
+NUMBER_RULES = {
+    "graduation_year": (2013, 2017),
+    "course_preparation_score": (1, 4),
+    "employability_skill_count": (0, 6),
+    "problem_solving_skill": (0, 1),
+    "communication_skill": (0, 1),
+    TARGET: (MIN_INCOME, MAX_INCOME),
+}
 
 
 def make_preprocessor() -> ColumnTransformer:
@@ -174,25 +199,25 @@ def validate_training_data(data: pd.DataFrame) -> pd.DataFrame:
     clean = data[MODEL_FEATURES + [TARGET]].copy()
     for column in NUMERIC_FEATURES + [TARGET]:
         clean[column] = pd.to_numeric(clean[column], errors="coerce")
-    clean = clean.dropna(subset=[TARGET])
-    clean = clean[clean[TARGET].between(MIN_INCOME, MAX_INCOME)]
+
+    if clean.isna().any().any():
+        raise ValueError("Training data contains missing or invalid values.")
+
+    for column, (minimum, maximum) in NUMBER_RULES.items():
+        if not clean[column].between(minimum, maximum).all():
+            raise ValueError(f"{column} must be between {minimum} and {maximum}.")
+
+    for column, allowed in CATEGORY_RULES.items():
+        if not clean[column].isin(allowed).all():
+            raise ValueError(f"{column} contains an unsupported value.")
+
+    selected_skills = clean["problem_solving_skill"] + clean["communication_skill"]
+    if (clean["employability_skill_count"] < selected_skills).any():
+        raise ValueError("Skill count cannot be lower than the selected skills.")
+
     if len(clean) < 500:
         raise ValueError("At least 500 valid labelled rows are required for retraining.")
     return clean
-
-
-def atomic_joblib_dump(model: Pipeline, destination: Path) -> None:
-    destination.parent.mkdir(parents=True, exist_ok=True)
-    descriptor, temporary_name = tempfile.mkstemp(
-        prefix="model-", suffix=".joblib", dir=destination.parent
-    )
-    os.close(descriptor)
-    temporary_path = Path(temporary_name)
-    try:
-        joblib.dump(model, temporary_path)
-        temporary_path.replace(destination)
-    finally:
-        temporary_path.unlink(missing_ok=True)
 
 
 def train_and_save(data: pd.DataFrame | None = None) -> dict[str, Any]:
@@ -224,7 +249,7 @@ def train_and_save(data: pd.DataFrame | None = None) -> dict[str, Any]:
     loss_curve = build_sgd_loss_curve(x_train, x_test, y_train, y_test)
     LOSS_CURVE_PATH.parent.mkdir(parents=True, exist_ok=True)
     loss_curve.to_csv(LOSS_CURVE_PATH, index=False)
-    atomic_joblib_dump(trained[best_name], MODEL_PATH)
+    joblib.dump(trained[best_name], MODEL_PATH)
 
     timestamp = datetime.now(UTC)
     metadata: dict[str, Any] = {

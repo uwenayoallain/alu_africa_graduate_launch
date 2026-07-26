@@ -10,7 +10,6 @@ VALID_PAYLOAD = {
     "first_job_sector": "Technology and telecommunications",
     "qualification_requirement": "Gave an advantage",
     "first_job_via_nysc": "No",
-    "employer_valued_factor": "Internship or practical experience",
     "course_preparation_score": 3,
     "employability_skill_count": 5,
     "problem_solving_skill": True,

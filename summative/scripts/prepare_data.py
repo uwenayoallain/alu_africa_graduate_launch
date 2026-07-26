@@ -1,5 +1,3 @@
-"""Prepare first-employment outcomes from the Nigerian graduate survey."""
-
 from __future__ import annotations
 
 import re
@@ -144,23 +142,6 @@ def group_sector(value: object) -> str:
     return "Other"
 
 
-def group_employer_factor(value: object) -> str:
-    text = str(value).lower()
-    if any(term in text for term in ("intern", "siwes", "industrial training")):
-        return "Internship or practical experience"
-    if "subject" in text:
-        return "Subject studied"
-    if any(term in text for term in ("level", "grade", "institution", "qualification")):
-        return "Academic credential"
-    if any(term in text for term in ("skill", "experience", "learn")):
-        return "Skills and prior experience"
-    if "no one thing" in text:
-        return "No single factor"
-    if "don't know" in text or text == "nan":
-        return "Unknown"
-    return "Other"
-
-
 def normalize_education(value: object) -> str:
     text = str(value)
     if text == "PhDs/Doctorate Degree":
@@ -224,7 +205,6 @@ def prepare_dataframe(raw: pd.DataFrame) -> pd.DataFrame:
             "first_job_sector": data[columns[13]].map(group_sector),
             "qualification_requirement": data[columns[15]].map(normalize_qualification),
             "first_job_via_nysc": data[columns[10]].map(normalize_nysc),
-            "employer_valued_factor": data[columns[28]].map(group_employer_factor),
             "course_preparation_score": data[columns[33]].map(preparation_map),
             "employability_skill_count": skill_count.clip(0, 6),
             "problem_solving_skill": skills.str.contains(
@@ -240,13 +220,15 @@ def prepare_dataframe(raw: pd.DataFrame) -> pd.DataFrame:
     clean["graduation_year"] = clean["graduation_year"].astype(int)
     clean["course_preparation_score"] = clean["course_preparation_score"].astype(int)
     clean["employability_skill_count"] = clean["employability_skill_count"].astype(int)
+    clean["problem_solving_skill"] = clean["problem_solving_skill"].astype(int)
+    clean["communication_skill"] = clean["communication_skill"].astype(int)
     return clean
 
 
 def main() -> None:
     if not RAW_PATH.exists():
         raise SystemExit("Raw survey missing. Run `uv run python scripts/download_data.py`.")
-    raw = pd.read_csv(RAW_PATH)
+    raw = pd.read_csv(RAW_PATH).drop_duplicates()
     clean = prepare_dataframe(raw)
     CLEAN_PATH.parent.mkdir(parents=True, exist_ok=True)
     clean.to_csv(CLEAN_PATH, index=False)

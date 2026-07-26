@@ -1,11 +1,11 @@
 {
-  "model_name": "LinearRegression",
-  "model_version": "20260726T141357Z",
-  "trained_at": "2026-07-26T14:13:57.250651+00:00",
+  "model_name": "SGDRegressor",
+  "model_version": "20260726T162940Z",
+  "trained_at": "2026-07-26T16:29:40.832915+00:00",
   "selection_metric": "lowest held-out RMSE in 2018 Nigerian naira",
   "training_rows": 1324,
-  "test_rows": 332,
-  "total_rows": 1656,
+  "test_rows": 331,
+  "total_rows": 1655,
   "target": "first_monthly_income_ngn",
   "features": [
     "graduation_year",
@@ -15,7 +15,6 @@
     "first_job_sector",
     "qualification_requirement",
     "first_job_via_nysc",
-    "employer_valued_factor",
     "course_preparation_score",
     "employability_skill_count",
     "problem_solving_skill",
@@ -23,32 +22,32 @@
   ],
   "metrics": {
     "LinearRegression": {
-      "rmse_ngn": 43830.23524377829,
-      "mae_ngn": 30329.203392115207,
-      "r2": 0.1320380328101023
+      "rmse_ngn": 43792.378081521376,
+      "mae_ngn": 29979.49168078308,
+      "r2": 0.11838904944504902
     },
     "SGDRegressor": {
-      "rmse_ngn": 43900.9773637605,
-      "mae_ngn": 30378.744834296176,
-      "r2": 0.12923398577036294
+      "rmse_ngn": 43319.953926975206,
+      "mae_ngn": 29811.875931709048,
+      "r2": 0.13730776516425458
     },
     "DecisionTreeRegressor": {
-      "rmse_ngn": 46868.47345269872,
-      "mae_ngn": 32641.04115905941,
-      "r2": 0.007536121868959911
+      "rmse_ngn": 46110.4349481572,
+      "mae_ngn": 32351.2384907236,
+      "r2": 0.022586452100558096
     },
     "RandomForestRegressor": {
-      "rmse_ngn": 44474.954153182494,
-      "mae_ngn": 30638.1905732867,
-      "r2": 0.10631573709665587
+      "rmse_ngn": 43799.25304465841,
+      "mae_ngn": 30071.357979638637,
+      "r2": 0.11811221960327212
     }
   },
   "baseline": {
     "training_median_ngn": 35000.0,
     "test_median_baseline": {
-      "rmse_ngn": 50561.60503400241,
-      "mae_ngn": 29066.265060240963,
-      "r2": -0.15503407285955806
+      "rmse_ngn": 50049.82411817067,
+      "mae_ngn": 28731.117824773413,
+      "r2": -0.15155590884935943
     }
   },
   "limitations": [

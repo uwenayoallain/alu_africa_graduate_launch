@@ -1,5 +1,3 @@
-"""FastAPI application for the African graduate launch benchmark."""
-
 from __future__ import annotations
 
 import io
@@ -75,6 +73,22 @@ app.add_middleware(
 )
 
 
+def income_band(prediction: float) -> str:
+    if prediction < 20_000:
+        return "Under ₦20,000"
+    if prediction < 50_000:
+        return "₦20,000–₦49,999"
+    if prediction < 100_000:
+        return "₦50,000–₦99,999"
+    if prediction < 150_000:
+        return "₦100,000–₦149,999"
+    if prediction < 200_000:
+        return "₦150,000–₦199,999"
+    if prediction < 250_000:
+        return "₦200,000–₦249,999"
+    return "₦250,000 and above"
+
+
 @app.get("/", tags=["Service"])
 def root() -> dict[str, str]:
     return {
@@ -113,23 +127,9 @@ def predict(payload: PredictionRequest) -> PredictionResponse:
         )
     prediction = float(model.predict(request_frame(payload))[0])
     prediction = min(275_000.0, max(10_000.0, prediction))
-    if prediction < 20_000:
-        band = "Under ₦20,000"
-    elif prediction < 50_000:
-        band = "₦20,000–₦49,999"
-    elif prediction < 100_000:
-        band = "₦50,000–₦99,999"
-    elif prediction < 150_000:
-        band = "₦100,000–₦149,999"
-    elif prediction < 200_000:
-        band = "₦150,000–₦199,999"
-    elif prediction < 250_000:
-        band = "₦200,000–₦249,999"
-    else:
-        band = "₦250,000 and above"
     return PredictionResponse(
         predicted_first_monthly_income_ngn_2018=round(prediction, 2),
-        income_band=band,
+        income_band=income_band(prediction),
         model_name=metadata["model_name"],
         model_version=metadata["model_version"],
     )
@@ -193,5 +193,4 @@ def retrain(
 
 
 def model_artifact_paths() -> tuple[Path, Path]:
-    """Expose artifact locations for tests and operational scripts."""
     return MODEL_PATH, METADATA_PATH

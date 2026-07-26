@@ -1,5 +1,3 @@
-"""Shared feature definitions for the graduate launch benchmark."""
-
 PUBLIC_FEATURES = [
     "graduation_year",
     "education_level",
@@ -8,7 +6,6 @@ PUBLIC_FEATURES = [
     "first_job_sector",
     "qualification_requirement",
     "first_job_via_nysc",
-    "employer_valued_factor",
     "course_preparation_score",
     "employability_skill_count",
     "problem_solving_skill",
@@ -81,14 +78,4 @@ NYSC_PATHWAYS = {
     "Yes",
     "No",
     "Not completed",
-}
-
-EMPLOYER_VALUED_FACTORS = {
-    "Internship or practical experience",
-    "Subject studied",
-    "Academic credential",
-    "Skills and prior experience",
-    "No single factor",
-    "Unknown",
-    "Other",
 }

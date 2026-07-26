@@ -1,5 +1,3 @@
-"""Pydantic request and response contracts."""
-
 from __future__ import annotations
 
 from enum import StrEnum
@@ -61,16 +59,6 @@ class NYSCPathway(StrEnum):
     not_completed = "Not completed"
 
 
-class EmployerValuedFactor(StrEnum):
-    internship = "Internship or practical experience"
-    subject = "Subject studied"
-    credential = "Academic credential"
-    skills = "Skills and prior experience"
-    no_single = "No single factor"
-    unknown = "Unknown"
-    other = "Other"
-
-
 class PredictionRequest(BaseModel):
     model_config = ConfigDict(
         json_schema_extra={
@@ -82,7 +70,6 @@ class PredictionRequest(BaseModel):
                 "first_job_sector": "Technology and telecommunications",
                 "qualification_requirement": "Gave an advantage",
                 "first_job_via_nysc": "No",
-                "employer_valued_factor": "Internship or practical experience",
                 "course_preparation_score": 3,
                 "employability_skill_count": 5,
                 "problem_solving_skill": True,
@@ -98,7 +85,6 @@ class PredictionRequest(BaseModel):
     first_job_sector: SectorGroup
     qualification_requirement: QualificationRequirement
     first_job_via_nysc: NYSCPathway
-    employer_valued_factor: EmployerValuedFactor
     course_preparation_score: int = Field(ge=1, le=4)
     employability_skill_count: int = Field(ge=0, le=6)
     problem_solving_skill: bool

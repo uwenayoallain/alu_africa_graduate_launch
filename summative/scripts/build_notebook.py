@@ -35,12 +35,12 @@ or house-price model."""
 
 The source is the **Stutern Nigerian Graduate Report 2018**, a real survey of 5,219
 Nigerian graduates from the 2013–2017 cohorts. Stutern created it to improve African
-graduate employment and employer matching. It covers education, skills, internships,
+graduate employment and employer matching. It covers education, skills,
 employment status, first jobs, sectors, qualification relevance, and income.
 
 - Source: https://www.kaggle.com/datasets/stutern/nigerian-gradaute-report-2018
 - Survey rows: 5,219 with 36 original variables
-- Labelled first-employment rows after preparation: 1,656
+- Labelled first-employment rows after preparation: 1,655
 - Continuous target: midpoint of the reported first monthly income range in Nigerian naira
 
 The source is Nigeria-specific. It provides valuable African evidence, but the results
@@ -78,7 +78,8 @@ The source income is categorical ranges. Each range is converted to its midpoint
 
 The following decisions make the model useful and safer:
 
-- timestamp, institution name, employer name, transport, free-text role, and survey
+- duplicate source submissions, timestamp, institution name, employer name, transport,
+  free-text role, and survey
   commentary are dropped because they are identifiers, high-cardinality text, or unrelated;
 - gender is deliberately excluded from prediction because it is sensitive and not an
   intervention a youth program should optimize;
@@ -86,7 +87,8 @@ The following decisions make the model useful and safer:
 - 30 sectors become nine pathway groups, including technology and telecommunications;
 - multi-select skills become a numeric count plus problem-solving and communication flags;
 - course-preparation responses become an ordinal 1–4 score;
-- detailed qualification and employer responses become stable categories.
+- the first-job qualification response becomes a stable category;
+- current-job fields are dropped because they happen after the first-income outcome.
 
 Numeric fields are median-imputed and standardized with `StandardScaler`. Categorical
 fields are most-frequent-imputed and one-hot encoded. All transformations are fitted only
@@ -138,11 +140,10 @@ plt.tight_layout()
 plt.show()"""
     ),
     nbf.v4.new_markdown_cell(
-        """## Visualization 3: pathways that affect training decisions
+"""## Visualization 3: pathways that affect training decisions
 
-Sector medians and employer-valued factors show why program design should include both
-curriculum and exposure to work. The comparison informs technology bootcamp curricula,
-internship partnerships, and career preparation rather than making promises to individuals."""
+Sector and course-preparation comparisons can guide curriculum and career preparation.
+They describe groups in this survey and must not be treated as promises to individuals."""
     ),
     nbf.v4.new_code_cell(
         """fig, axes = plt.subplots(1, 2, figsize=(15, 6))
@@ -152,15 +153,14 @@ sns.boxplot(
     showfliers=False, ax=axes[0], color="#e6b557"
 )
 axes[0].set(title="Income by first-job sector", xlabel="Monthly income midpoint (₦)", ylabel="")
-factor_order = data.groupby("employer_valued_factor")[TARGET].median().sort_values().index
 sns.boxplot(
-    data=data, y="employer_valued_factor", x=TARGET, order=factor_order,
+    data=data, x="course_preparation_score", y=TARGET,
     showfliers=False, ax=axes[1], color="#7fa496"
 )
 axes[1].set(
-    title="Income by employer-valued factor",
-    xlabel="Monthly income midpoint (₦)",
-    ylabel="",
+    title="Income by course-preparation score",
+    xlabel="Course preparation score",
+    ylabel="Monthly income midpoint (₦)",
 )
 plt.tight_layout()
 plt.show()"""
@@ -295,7 +295,7 @@ income is midpoint-coded, values are historical 2018 naira, and Nigeria cannot r
 whole continent.
 
 `POST /retrain` accepts new labelled rows, validates the same schema, compares all four
-algorithms again, atomically saves the lowest-RMSE pipeline, and reloads it for prediction."""
+algorithms again, saves the lowest-RMSE pipeline, and reloads it for prediction."""
     ),
 ]
 
