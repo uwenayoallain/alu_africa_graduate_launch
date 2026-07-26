@@ -78,19 +78,21 @@ Example prediction body:
 
 ```json
 {
-  "age": 24,
-  "education_level": "Upper secondary education",
-  "career_field": "ICT",
-  "main_sector": "Services",
+  "age": 23,
+  "education_level": "Primary education",
+  "career_field": "Agriculture",
+  "main_sector": "Agriculture",
   "employer_type": "Private business or VUP",
-  "contract_type": "Written contract",
-  "weekly_hours": 40,
-  "residence": "Urban",
-  "province": "Kigali city"
+  "contract_type": "Oral agreement",
+  "weekly_hours": 36,
+  "residence": "Rural",
+  "province": "Eastern Province"
 }
 ```
 
 Pydantic enforces the datatype, range, or accepted category for every input.
+It also rejects education, career, sector, employer, and contract combinations
+that have too little coverage in the survey.
 The deployed retraining endpoint is protected by the `X-Retrain-Key` header.
 
 ## CORS
@@ -145,7 +147,8 @@ flutter run -d web-server --web-hostname 0.0.0.0 --web-port 3000
 For local Android emulator testing, use
 `--dart-define=API_BASE_URL=http://10.0.2.2:8000`. The app has one page, one
 input control for every model feature, a `Predict` button, and a result or error
-area.
+area. Related dropdowns update together, while both rural and urban remain
+available for every province.
 
 ## Project structure
 
