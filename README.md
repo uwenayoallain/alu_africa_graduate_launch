@@ -48,13 +48,13 @@ It contains the data checks, feature decisions, income distribution,
 correlation heatmap, career comparison, standardization, four models, loss
 curve, fitted line, and one test-row prediction.
 
-| Model | RMSE | MAE | R² |
-|---|---:|---:|---:|
-| Random Forest | **about 30,900 RWF** | **about 16,900 RWF** | **0.556** |
-| Stochastic Gradient Descent | about 31,000 RWF | about 18,000 RWF | 0.553 |
-| Ordinary Linear Regression | about 31,000 RWF | about 17,900 RWF | 0.551 |
-| Decision Tree | about 31,800 RWF | about 17,700 RWF | 0.529 |
-| Median baseline | about 49,500 RWF | about 26,100 RWF | -0.140 |
+| Model                       |                 RMSE |                  MAE |        R² |
+| --------------------------- | -------------------: | -------------------: | --------: |
+| Random Forest               | **about 30,900 RWF** | **about 16,900 RWF** | **0.556** |
+| Stochastic Gradient Descent |     about 31,000 RWF |     about 18,000 RWF |     0.553 |
+| Ordinary Linear Regression  |     about 31,000 RWF |     about 17,900 RWF |     0.551 |
+| Decision Tree               |     about 31,800 RWF |     about 17,700 RWF |     0.529 |
+| Median baseline             |     about 49,500 RWF |     about 26,100 RWF |    -0.140 |
 
 RMSE is a prediction error that gives large mistakes extra weight. MAE is the
 average size of the mistakes. Lower RMSE and MAE are better. R² shows how much
@@ -169,11 +169,3 @@ summative/
 ├── uv.lock
 └── requirements.txt
 ```
-
-## Video
-
-YouTube: **`https://youtube.com/REPLACE-WITH-YOUR-VIDEO`**
-
-The video must remain within seven minutes. Show the mobile prediction and
-Swagger tests within the first two minutes, then explain the notebook, model
-loss, hyperparameters, retraining, and CORS choices.
