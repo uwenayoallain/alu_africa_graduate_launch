@@ -37,7 +37,7 @@ class PredictionService {
 
   static const _configuredBaseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://10.0.2.2:8000',
+    defaultValue: 'https://alu-africa-youth-income.onrender.com',
   );
 
   final http.Client _client;

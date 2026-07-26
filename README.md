@@ -121,19 +121,19 @@ retraining-key settings.
 
 - Create a Render Blueprint from this GitHub repository.
 - Wait for the `/health` check to pass.
-- Open `https://YOUR-SERVICE.onrender.com/docs`.
+- Open <https://alu-africa-youth-income.onrender.com/docs>.
 - Test a valid prediction and invalid datatype, range, and missing-field cases.
 - Use the same Render service URL when running Flutter.
 
 Public Swagger URL:
-**`https://REPLACE-WITH-YOUR-RENDER-SERVICE.onrender.com/docs`**
+**<https://alu-africa-youth-income.onrender.com/docs>**
 
 ## Run the Flutter app
 
 ```bash
 cd summative/FlutterApp
 flutter pub get
-flutter run --dart-define=API_BASE_URL=https://YOUR-SERVICE.onrender.com
+flutter run
 ```
 
 For local Android emulator testing, use
