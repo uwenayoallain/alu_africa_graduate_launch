@@ -14,16 +14,16 @@ class PredictionPage extends StatefulWidget {
 class _PredictionPageState extends State<PredictionPage> {
   final _formKey = GlobalKey<FormState>();
   final _service = PredictionService();
-  final _ageController = TextEditingController(text: '24');
-  final _hoursController = TextEditingController(text: '40');
+  final _ageController = TextEditingController(text: '23');
+  final _hoursController = TextEditingController(text: '36');
 
-  String _education = 'Upper secondary education';
-  String _career = 'ICT';
-  String _sector = 'Services';
+  String _education = 'Primary education';
+  String _career = 'Agriculture';
+  String _sector = 'Agriculture';
   String _employer = 'Private business or VUP';
-  String _contract = 'Written contract';
-  String _residence = 'Urban';
-  String _province = 'Kigali city';
+  String _contract = 'Oral agreement';
+  String _residence = 'Rural';
+  String _province = 'Eastern Province';
   bool _loading = false;
   PredictionResult? _result;
   String? _error;
@@ -35,17 +35,6 @@ class _PredictionPageState extends State<PredictionPage> {
     'Lower secondary education',
     'Upper secondary education',
     'Tertiary education',
-  ];
-
-  static const careerFields = [
-    'ICT',
-    'Science and engineering',
-    'Education, health and social services',
-    'Business, management and office work',
-    'Sales and services',
-    'Skilled trades and operators',
-    'Agriculture',
-    'Elementary and other work',
   ];
 
   static const employerTypes = [
@@ -65,6 +54,109 @@ class _PredictionPageState extends State<PredictionPage> {
     'Southern Province',
     'Western Province',
   ];
+
+  static const educationCareers = {
+    'No formal education': ['Agriculture', 'Elementary and other work'],
+    'Pre-primary': ['Agriculture', 'Elementary and other work'],
+    'Primary education': [
+      'Sales and services',
+      'Skilled trades and operators',
+      'Education, health and social services',
+      'Agriculture',
+      'Elementary and other work',
+    ],
+    'Lower secondary education': [
+      'Sales and services',
+      'Skilled trades and operators',
+      'Education, health and social services',
+      'Agriculture',
+      'Elementary and other work',
+    ],
+    'Upper secondary education': [
+      'ICT',
+      'Science and engineering',
+      'Education, health and social services',
+      'Business, management and office work',
+      'Sales and services',
+      'Skilled trades and operators',
+      'Agriculture',
+      'Elementary and other work',
+    ],
+    'Tertiary education': [
+      'ICT',
+      'Science and engineering',
+      'Education, health and social services',
+      'Business, management and office work',
+      'Sales and services',
+      'Skilled trades and operators',
+      'Elementary and other work',
+    ],
+  };
+
+  static const careerSectors = {
+    'ICT': ['Services'],
+    'Science and engineering': ['Industry', 'Services'],
+    'Education, health and social services': ['Services'],
+    'Business, management and office work': ['Industry', 'Services'],
+    'Sales and services': ['Industry', 'Services'],
+    'Skilled trades and operators': ['Industry', 'Services'],
+    'Agriculture': ['Agriculture', 'Industry', 'Services'],
+    'Elementary and other work': ['Agriculture', 'Industry', 'Services'],
+  };
+
+  static const employerContracts = {
+    'Private business or VUP': ['Oral agreement', 'Written contract'],
+    'Public institution': ['Oral agreement', 'Written contract'],
+    'Public-private enterprise': ['Written contract'],
+    'Household': ['Oral agreement', 'Written contract'],
+    'Cooperative': ['Oral agreement'],
+    'NGO or international organisation': ['Oral agreement', 'Written contract'],
+    'Other': ['Oral agreement'],
+  };
+
+  List<String> get _careerOptions => educationCareers[_education]!;
+  List<String> get _sectorOptions => careerSectors[_career]!;
+  List<String> get _contractOptions => employerContracts[_employer]!;
+
+  String get _careerSupport {
+    if (_education == 'Pre-primary') {
+      return 'This education level has limited survey coverage, so use the estimate carefully.';
+    }
+    if (const [
+      'ICT',
+      'Science and engineering',
+      'Business, management and office work',
+    ].contains(_career)) {
+      return 'This career has limited survey coverage, so use the estimate carefully.';
+    }
+    return 'This career has broader coverage in the survey.';
+  }
+
+  void _changeEducation(String value) {
+    setState(() {
+      _education = value;
+      final careers = educationCareers[value]!;
+      if (!careers.contains(_career)) _career = careers.first;
+      final sectors = careerSectors[_career]!;
+      if (!sectors.contains(_sector)) _sector = sectors.first;
+    });
+  }
+
+  void _changeCareer(String value) {
+    setState(() {
+      _career = value;
+      final sectors = careerSectors[value]!;
+      if (!sectors.contains(_sector)) _sector = sectors.first;
+    });
+  }
+
+  void _changeEmployer(String value) {
+    setState(() {
+      _employer = value;
+      final contracts = employerContracts[value]!;
+      if (!contracts.contains(_contract)) _contract = contracts.first;
+    });
+  }
 
   @override
   void dispose() {
@@ -144,13 +236,14 @@ class _PredictionPageState extends State<PredictionPage> {
                           'Education level',
                           _education,
                           educationLevels,
-                          (value) => setState(() => _education = value),
+                          _changeEducation,
                         ),
                         _dropdown(
                           'Career field',
                           _career,
-                          careerFields,
-                          (value) => setState(() => _career = value),
+                          _careerOptions,
+                          _changeCareer,
+                          helperText: _careerSupport,
                         ),
                       ],
                     ),
@@ -163,20 +256,22 @@ class _PredictionPageState extends State<PredictionPage> {
                         _dropdown(
                           'Main sector',
                           _sector,
-                          const ['Agriculture', 'Industry', 'Services'],
+                          _sectorOptions,
                           (value) => setState(() => _sector = value),
+                          helperText: 'Choices match the selected career.',
                         ),
                         _dropdown(
                           'Employer type',
                           _employer,
                           employerTypes,
-                          (value) => setState(() => _employer = value),
+                          _changeEmployer,
                         ),
                         _dropdown(
                           'Contract type',
                           _contract,
-                          const ['Oral agreement', 'Written contract'],
+                          _contractOptions,
                           (value) => setState(() => _contract = value),
+                          helperText: 'Choices match the selected employer.',
                         ),
                         _numberField(
                           _hoursController,
@@ -185,16 +280,18 @@ class _PredictionPageState extends State<PredictionPage> {
                           118,
                         ),
                         _dropdown(
-                          'Residence',
-                          _residence,
-                          const ['Rural', 'Urban'],
-                          (value) => setState(() => _residence = value),
-                        ),
-                        _dropdown(
                           'Province',
                           _province,
                           provinces,
                           (value) => setState(() => _province = value),
+                        ),
+                        _dropdown(
+                          'Area type',
+                          _residence,
+                          const ['Rural', 'Urban'],
+                          (value) => setState(() => _residence = value),
+                          helperText:
+                              'Rural and urban are both represented in $_province.',
                         ),
                       ],
                     ),
@@ -396,12 +493,21 @@ class _PredictionPageState extends State<PredictionPage> {
     String label,
     String value,
     List<String> items,
-    ValueChanged<String> onChanged,
-  ) {
+    ValueChanged<String> onChanged, {
+    String? helperText,
+  }) {
     return DropdownButtonFormField<String>(
+      key: ValueKey('$label-$value-${items.join('|')}'),
       initialValue: value,
       isExpanded: true,
-      decoration: InputDecoration(labelText: label),
+      menuMaxHeight: 360,
+      borderRadius: BorderRadius.circular(18),
+      icon: const Icon(Icons.keyboard_arrow_down_rounded),
+      decoration: InputDecoration(
+        labelText: label,
+        helperText: helperText,
+        helperMaxLines: 2,
+      ),
       items: items
           .map(
             (item) => DropdownMenuItem(
