@@ -51,7 +51,7 @@ class PredictionService {
             headers: const {'Content-Type': 'application/json; charset=UTF-8'},
             body: jsonEncode(payload),
           )
-          .timeout(const Duration(seconds: 25));
+          .timeout(const Duration(seconds: 60));
       final decoded = jsonDecode(response.body);
       if (response.statusCode == 200 && decoded is Map<String, dynamic>) {
         return PredictionResult.fromJson(decoded);
@@ -65,7 +65,7 @@ class PredictionService {
       );
     } catch (_) {
       throw const PredictionException(
-        'Could not reach the prediction service. Check the API URL and connection.',
+        'Could not reach the prediction service. Please check your connection and try again.',
       );
     }
   }

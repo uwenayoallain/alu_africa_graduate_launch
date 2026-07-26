@@ -96,9 +96,9 @@ The deployed retraining endpoint is protected by the `X-Retrain-Key` header.
 ## CORS
 
 CORS uses named origins instead of `*`. It allows the Render service, origins
-listed in `ALLOWED_ORIGINS`, and local development origins. Only `GET`, `POST`,
-and `OPTIONS` are permitted. Credentials are disabled because this API does not
-use browser cookies or sessions.
+listed in `ALLOWED_ORIGINS`, and only `localhost` or `127.0.0.1` for browser
+development. Only `GET`, `POST`, and `OPTIONS` are permitted. Credentials are
+disabled because this API does not use browser cookies or sessions.
 
 ## Run the API
 
@@ -134,6 +134,12 @@ Public Swagger URL:
 cd summative/FlutterApp
 flutter pub get
 flutter run
+```
+
+For a browser-based mobile preview:
+
+```bash
+flutter run -d web-server --web-hostname 0.0.0.0 --web-port 3000
 ```
 
 For local Android emulator testing, use

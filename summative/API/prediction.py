@@ -66,6 +66,7 @@ configured_origins = {
 app.add_middleware(
     CORSMiddleware,
     allow_origins=sorted(default_origins | configured_origins),
+    allow_origin_regex=r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$",
     allow_credentials=False,
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["Content-Type", "X-Retrain-Key"],
