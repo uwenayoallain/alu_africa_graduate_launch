@@ -6,13 +6,11 @@ class PredictionResult {
   const PredictionResult({
     required this.incomeNgn,
     required this.incomeBand,
-    required this.modelName,
     required this.programUse,
   });
 
   final double incomeNgn;
   final String incomeBand;
-  final String modelName;
   final String programUse;
 
   factory PredictionResult.fromJson(Map<String, dynamic> json) {
@@ -20,7 +18,6 @@ class PredictionResult {
       incomeNgn: (json['predicted_first_monthly_income_ngn_2018'] as num)
           .toDouble(),
       incomeBand: json['income_band'] as String,
-      modelName: json['model_name'] as String,
       programUse: json['program_use'] as String,
     );
   }

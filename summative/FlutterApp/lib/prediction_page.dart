@@ -23,7 +23,6 @@ class _PredictionPageState extends State<PredictionPage> {
   String _sector = 'Technology and telecommunications';
   String _qualification = 'Gave an advantage';
   String _nysc = 'No';
-  String _employerFactor = 'Internship or practical experience';
   int _preparationScore = 3;
   bool _problemSolving = true;
   bool _communication = true;
@@ -74,16 +73,6 @@ class _PredictionPageState extends State<PredictionPage> {
     'Not required',
     'Unknown',
   ];
-  static const employerFactors = [
-    'Internship or practical experience',
-    'Subject studied',
-    'Academic credential',
-    'Skills and prior experience',
-    'No single factor',
-    'Unknown',
-    'Other',
-  ];
-
   @override
   void dispose() {
     _graduationController.dispose();
@@ -132,7 +121,6 @@ class _PredictionPageState extends State<PredictionPage> {
       'first_job_sector': _sector,
       'qualification_requirement': _qualification,
       'first_job_via_nysc': _nysc,
-      'employer_valued_factor': _employerFactor,
       'course_preparation_score': _preparationScore,
       'employability_skill_count': skillCount,
       'problem_solving_skill': _problemSolving,
@@ -236,15 +224,8 @@ class _PredictionPageState extends State<PredictionPage> {
                         _section(
                           '03',
                           'Job-ready experience',
-                          'Explore practical experience and transferable skills.',
+                          'Describe the transferable skills from your studies.',
                           [
-                            _dropdown(
-                              'What the employer valued',
-                              _employerFactor,
-                              employerFactors,
-                              (value) =>
-                                  setState(() => _employerFactor = value),
-                            ),
                             _integerField(
                               _skillCountController,
                               'Employability skills represented',
@@ -284,7 +265,7 @@ class _PredictionPageState extends State<PredictionPage> {
                                 : const Icon(Icons.trending_up_rounded),
                             label: const Text('Predict'),
                             style: FilledButton.styleFrom(
-                              backgroundColor: AfricaTechBenchmarkApp.clay,
+                              backgroundColor: GraduateLaunchApp.clay,
                               foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(vertical: 18),
                             ),
@@ -309,7 +290,7 @@ class _PredictionPageState extends State<PredictionPage> {
   Widget _hero() {
     return Container(
       decoration: const BoxDecoration(
-        color: AfricaTechBenchmarkApp.forest,
+        color: GraduateLaunchApp.forest,
         borderRadius: BorderRadius.vertical(bottom: Radius.circular(34)),
       ),
       child: SafeArea(
@@ -339,7 +320,7 @@ class _PredictionPageState extends State<PredictionPage> {
                   ),
                   const SizedBox(height: 16),
                   const Text(
-                    'Explore how education, employability skills, internships, '
+                    'Explore how education, employability skills, '
                     'and first-job choices relate to early career outcomes.',
                     style: TextStyle(
                       color: Color(0xFFDCE9E3),
@@ -447,7 +428,7 @@ class _PredictionPageState extends State<PredictionPage> {
       title: Text(title),
       subtitle: Text(subtitle),
       value: value,
-      activeTrackColor: AfricaTechBenchmarkApp.forest.withValues(alpha: .55),
+      activeTrackColor: GraduateLaunchApp.forest.withValues(alpha: .55),
       onChanged: onChanged,
     );
   }
@@ -480,7 +461,7 @@ class _PredictionPageState extends State<PredictionPage> {
       width: double.infinity,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: AfricaTechBenchmarkApp.forest,
+        color: GraduateLaunchApp.forest,
         borderRadius: BorderRadius.circular(22),
       ),
       child: Column(

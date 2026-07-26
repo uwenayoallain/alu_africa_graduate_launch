@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('renders the complete prediction page', (tester) async {
-    await tester.pumpWidget(const AfricaTechBenchmarkApp());
+    await tester.pumpWidget(const GraduateLaunchApp());
 
     expect(
       find.text('Learn skills.\nBuild experience.\nLaunch a career.'),

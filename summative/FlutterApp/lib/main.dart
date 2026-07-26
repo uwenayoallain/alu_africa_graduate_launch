@@ -4,11 +4,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'prediction_page.dart';
 
 void main() {
-  runApp(const AfricaTechBenchmarkApp());
+  runApp(const GraduateLaunchApp());
 }
 
-class AfricaTechBenchmarkApp extends StatelessWidget {
-  const AfricaTechBenchmarkApp({super.key});
+class GraduateLaunchApp extends StatelessWidget {
+  const GraduateLaunchApp({super.key});
 
   static const canvas = Color(0xFFF3EFE4);
   static const forest = Color(0xFF173D34);
