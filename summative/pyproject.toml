@@ -1,7 +1,7 @@
 [project]
-name = "alu-africa-graduate-launch"
+name = "alu-africa-youth-income"
 version = "1.0.0"
-description = "African graduate pathway regression model, FastAPI service, and Flutter client."
+description = "African youth career income model, FastAPI service, and Flutter client."
 readme = "../README.md"
 requires-python = ">=3.11,<3.14"
 dependencies = [

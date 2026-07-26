@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: alu-africa-graduate-launch
+    name: alu-africa-youth-income
     runtime: python
     plan: free
     rootDir: summative

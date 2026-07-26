@@ -7,7 +7,7 @@ resolution-markers = [
 ]
 
 [[package]]
-name = "alu-africa-graduate-launch"
+name = "alu-africa-youth-income"
 version = "1.0.0"
 source = { virtual = "." }
 dependencies = [
