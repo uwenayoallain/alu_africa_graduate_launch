@@ -1,0 +1,11 @@
+{
+  "name": "African Youth Career Pathways",
+  "short_name": "Youth Pathways",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#123D35",
+  "theme_color": "#123D35",
+  "description": "A mobile career income prediction app.",
+  "orientation": "portrait-primary",
+  "prefer_related_applications": false
+}

@@ -124,106 +124,121 @@ class _PredictionPageState extends State<PredictionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
         slivers: [
           SliverToBoxAdapter(child: _hero()),
           SliverPadding(
-            padding: const EdgeInsets.fromLTRB(18, 24, 18, 48),
+            padding: const EdgeInsets.fromLTRB(16, 18, 16, 40),
             sliver: SliverToBoxAdapter(
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 720),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        _section('Education and direction', [
-                          _numberField(_ageController, 'Age', 16, 30),
-                          _dropdown(
-                            'Education level',
-                            _education,
-                            educationLevels,
-                            (value) => setState(() => _education = value),
-                          ),
-                          _dropdown(
-                            'Career field',
-                            _career,
-                            careerFields,
-                            (value) => setState(() => _career = value),
-                          ),
-                        ]),
-                        const SizedBox(height: 18),
-                        _section('Work pathway', [
-                          _dropdown(
-                            'Main sector',
-                            _sector,
-                            const ['Agriculture', 'Industry', 'Services'],
-                            (value) => setState(() => _sector = value),
-                          ),
-                          _dropdown(
-                            'Employer type',
-                            _employer,
-                            employerTypes,
-                            (value) => setState(() => _employer = value),
-                          ),
-                          _dropdown(
-                            'Contract type',
-                            _contract,
-                            const ['Oral agreement', 'Written contract'],
-                            (value) => setState(() => _contract = value),
-                          ),
-                          _numberField(
-                            _hoursController,
-                            'Usual weekly hours',
-                            1,
-                            118,
-                          ),
-                          _dropdown(
-                            'Residence',
-                            _residence,
-                            const ['Rural', 'Urban'],
-                            (value) => setState(() => _residence = value),
-                          ),
-                          _dropdown(
-                            'Province',
-                            _province,
-                            provinces,
-                            (value) => setState(() => _province = value),
-                          ),
-                        ]),
-                        const SizedBox(height: 24),
-                        SizedBox(
-                          width: double.infinity,
-                          child: FilledButton.icon(
-                            onPressed: _loading ? null : _predict,
-                            icon: _loading
-                                ? const SizedBox(
-                                    width: 20,
-                                    height: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      color: Colors.white,
-                                    ),
-                                  )
-                                : const Icon(Icons.trending_up_rounded),
-                            label: const Text('Predict'),
-                            style: FilledButton.styleFrom(
-                              backgroundColor: GraduateLaunchApp.clay,
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(vertical: 18),
-                            ),
-                          ),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    _section(
+                      '01',
+                      'Education & direction',
+                      'Start with your current learning and career path.',
+                      [
+                        _numberField(_ageController, 'Age', 16, 30),
+                        _dropdown(
+                          'Education level',
+                          _education,
+                          educationLevels,
+                          (value) => setState(() => _education = value),
                         ),
-                        const SizedBox(height: 18),
-                        if (_result != null) _resultCard(_result!),
-                        if (_error != null) _messageCard(_error!, true),
-                        if (_result == null && _error == null)
-                          _messageCard(
-                            'Your estimated monthly income will appear here.',
-                            false,
-                          ),
+                        _dropdown(
+                          'Career field',
+                          _career,
+                          careerFields,
+                          (value) => setState(() => _career = value),
+                        ),
                       ],
                     ),
-                  ),
+                    const SizedBox(height: 14),
+                    _section(
+                      '02',
+                      'Work pathway',
+                      'Describe the work setting you want to compare.',
+                      [
+                        _dropdown(
+                          'Main sector',
+                          _sector,
+                          const ['Agriculture', 'Industry', 'Services'],
+                          (value) => setState(() => _sector = value),
+                        ),
+                        _dropdown(
+                          'Employer type',
+                          _employer,
+                          employerTypes,
+                          (value) => setState(() => _employer = value),
+                        ),
+                        _dropdown(
+                          'Contract type',
+                          _contract,
+                          const ['Oral agreement', 'Written contract'],
+                          (value) => setState(() => _contract = value),
+                        ),
+                        _numberField(
+                          _hoursController,
+                          'Usual weekly hours',
+                          1,
+                          118,
+                        ),
+                        _dropdown(
+                          'Residence',
+                          _residence,
+                          const ['Rural', 'Urban'],
+                          (value) => setState(() => _residence = value),
+                        ),
+                        _dropdown(
+                          'Province',
+                          _province,
+                          provinces,
+                          (value) => setState(() => _province = value),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 58,
+                      child: FilledButton.icon(
+                        onPressed: _loading ? null : _predict,
+                        icon: _loading
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : const Icon(Icons.arrow_outward_rounded),
+                        label: Text(
+                          _loading ? 'Calculating…' : 'Predict income',
+                        ),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: GraduateLaunchApp.clay,
+                          foregroundColor: Colors.white,
+                          textStyle: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w800,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(17),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    if (_result != null) _resultCard(_result!),
+                    if (_error != null) _messageCard(_error!, true),
+                    if (_result == null && _error == null)
+                      _messageCard(
+                        'Complete the fields to compare this pathway.',
+                        false,
+                      ),
+                  ],
                 ),
               ),
             ),
@@ -235,67 +250,141 @@ class _PredictionPageState extends State<PredictionPage> {
 
   Widget _hero() {
     return Container(
-      decoration: const BoxDecoration(
-        color: GraduateLaunchApp.forest,
-        borderRadius: BorderRadius.vertical(bottom: Radius.circular(34)),
-      ),
-      child: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(24, 30, 24, 36),
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 720),
+      decoration: const BoxDecoration(color: GraduateLaunchApp.forest),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Positioned(
+            right: -68,
+            top: 14,
+            child: Container(
+              width: 180,
+              height: 180,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: GraduateLaunchApp.gold.withValues(alpha: 0.14),
+                  width: 30,
+                ),
+              ),
+            ),
+          ),
+          SafeArea(
+            bottom: false,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 28, 20, 30),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'AFRICAN YOUTH CAREER PATHWAYS',
-                    style: TextStyle(
-                      color: Color(0xFFE6B557),
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 1.1,
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 11,
+                      vertical: 7,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(999),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.14),
+                      ),
+                    ),
+                    child: const Text(
+                      'RWANDA LFS  •  2024',
+                      style: TextStyle(
+                        color: GraduateLaunchApp.gold,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 1.2,
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 22),
                   Text(
-                    'Explore a path.\nBuild the skills.\nEnter the industry.',
+                    'See where your\npath could lead.',
                     style: Theme.of(
                       context,
-                    ).textTheme.displayLarge?.copyWith(fontSize: 42),
+                    ).textTheme.displayLarge?.copyWith(fontSize: 38),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 14),
                   const Text(
-                    'Compare education and work pathways using a Rwanda '
-                    'Labour Force Survey income benchmark.',
+                    'Compare education and work choices using a youth '
+                    'income benchmark from Rwanda.',
                     style: TextStyle(
                       color: Color(0xFFDCE9E3),
-                      height: 1.5,
-                      fontSize: 16,
+                      height: 1.45,
+                      fontSize: 15,
                     ),
                   ),
                 ],
               ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
 
-  Widget _section(String title, List<Widget> children) {
+  Widget _section(
+    String number,
+    String title,
+    String description,
+    List<Widget> children,
+  ) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.fromLTRB(18, 18, 18, 8),
       decoration: BoxDecoration(
         color: const Color(0xFFFFFCF4),
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: const Color(0xFFE3DCCF)),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: const Color(0xFFE0D8C9)),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x0D123D35),
+            blurRadius: 24,
+            offset: Offset(0, 10),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: Theme.of(context).textTheme.titleLarge),
+          Row(
+            children: [
+              Container(
+                width: 34,
+                height: 34,
+                alignment: Alignment.center,
+                decoration: const BoxDecoration(
+                  color: Color(0xFFE7EFEA),
+                  shape: BoxShape.circle,
+                ),
+                child: Text(
+                  number,
+                  style: const TextStyle(
+                    color: GraduateLaunchApp.forest,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 11),
+              Expanded(
+                child: Text(
+                  title,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            description,
+            style: const TextStyle(
+              color: Color(0xFF68716D),
+              fontSize: 13,
+              height: 1.4,
+            ),
+          ),
           const SizedBox(height: 18),
           ...children.expand((child) => [child, const SizedBox(height: 14)]),
         ],
@@ -349,10 +438,21 @@ class _PredictionPageState extends State<PredictionPage> {
     );
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
-        color: GraduateLaunchApp.forest,
-        borderRadius: BorderRadius.circular(22),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFF123D35), Color(0xFF1C5549)],
+        ),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x26123D35),
+            blurRadius: 28,
+            offset: Offset(0, 12),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -370,9 +470,10 @@ class _PredictionPageState extends State<PredictionPage> {
             money.format(result.incomeRwf),
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
               color: Colors.white,
-              fontSize: 40,
+              fontSize: 36,
             ),
           ),
+          const SizedBox(height: 2),
           Text(
             result.incomeBand,
             style: const TextStyle(color: Color(0xFFDCE9E3)),
@@ -390,12 +491,26 @@ class _PredictionPageState extends State<PredictionPage> {
   Widget _messageCard(String message, bool error) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: error ? const Color(0xFFFFE8DF) : Colors.transparent,
-        borderRadius: BorderRadius.circular(18),
+        color: error ? const Color(0xFFFFE8DF) : const Color(0xFFE7EFEA),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: error ? const Color(0xFFF4B9A4) : const Color(0xFFC8DAD1),
+        ),
       ),
-      child: Text(message),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            error ? Icons.error_outline_rounded : Icons.info_outline_rounded,
+            color: error ? GraduateLaunchApp.clay : GraduateLaunchApp.forest,
+            size: 21,
+          ),
+          const SizedBox(width: 10),
+          Expanded(child: Text(message, style: const TextStyle(height: 1.4))),
+        ],
+      ),
     );
   }
 }
