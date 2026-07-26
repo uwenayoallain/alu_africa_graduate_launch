@@ -59,3 +59,51 @@ PROVINCES = {
     "Southern Province",
     "Western Province",
 }
+
+EDUCATION_CAREERS = {
+    "No formal education": {
+        "Agriculture",
+        "Elementary and other work",
+    },
+    "Pre-primary": {
+        "Agriculture",
+        "Elementary and other work",
+    },
+    "Primary education": {
+        "Education, health and social services",
+        "Sales and services",
+        "Skilled trades and operators",
+        "Agriculture",
+        "Elementary and other work",
+    },
+    "Lower secondary education": {
+        "Education, health and social services",
+        "Sales and services",
+        "Skilled trades and operators",
+        "Agriculture",
+        "Elementary and other work",
+    },
+    "Upper secondary education": CAREER_FIELDS,
+    "Tertiary education": CAREER_FIELDS - {"Agriculture"},
+}
+
+CAREER_SECTORS = {
+    "ICT": {"Services"},
+    "Science and engineering": {"Industry", "Services"},
+    "Education, health and social services": {"Services"},
+    "Business, management and office work": {"Industry", "Services"},
+    "Sales and services": {"Industry", "Services"},
+    "Skilled trades and operators": {"Industry", "Services"},
+    "Agriculture": {"Agriculture", "Industry", "Services"},
+    "Elementary and other work": {"Agriculture", "Industry", "Services"},
+}
+
+EMPLOYER_CONTRACTS = {
+    "Private business or VUP": {"Oral agreement", "Written contract"},
+    "Public institution": {"Oral agreement", "Written contract"},
+    "Public-private enterprise": {"Written contract"},
+    "Household": {"Oral agreement", "Written contract"},
+    "Cooperative": {"Oral agreement"},
+    "NGO or international organisation": {"Oral agreement", "Written contract"},
+    "Other": {"Oral agreement"},
+}

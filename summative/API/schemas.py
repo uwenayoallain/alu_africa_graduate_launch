@@ -1,6 +1,8 @@
 from enum import StrEnum
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
+
+from API.config import CAREER_SECTORS, EDUCATION_CAREERS, EMPLOYER_CONTRACTS
 
 
 class EducationLevel(StrEnum):
@@ -61,15 +63,15 @@ class PredictionRequest(BaseModel):
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
-                "age": 24,
-                "education_level": "Upper secondary education",
-                "career_field": "ICT",
-                "main_sector": "Services",
+                "age": 23,
+                "education_level": "Primary education",
+                "career_field": "Agriculture",
+                "main_sector": "Agriculture",
                 "employer_type": "Private business or VUP",
-                "contract_type": "Written contract",
-                "weekly_hours": 40,
-                "residence": "Urban",
-                "province": "Kigali city",
+                "contract_type": "Oral agreement",
+                "weekly_hours": 36,
+                "residence": "Rural",
+                "province": "Eastern Province",
             }
         }
     )
@@ -83,6 +85,28 @@ class PredictionRequest(BaseModel):
     weekly_hours: float = Field(ge=1, le=118)
     residence: Residence
     province: Province
+
+    @model_validator(mode="after")
+    def check_supported_pathway(self):
+        education = self.education_level.value
+        career = self.career_field.value
+        sector = self.main_sector.value
+        employer = self.employer_type.value
+        contract = self.contract_type.value
+
+        if career not in EDUCATION_CAREERS[education]:
+            raise ValueError(
+                f"{career} has too little survey coverage for {education}."
+            )
+        if sector not in CAREER_SECTORS[career]:
+            raise ValueError(
+                f"{sector} has too little survey coverage for {career}."
+            )
+        if contract not in EMPLOYER_CONTRACTS[employer]:
+            raise ValueError(
+                f"{contract} has too little survey coverage for {employer}."
+            )
+        return self
 
 
 class PredictionResponse(BaseModel):
