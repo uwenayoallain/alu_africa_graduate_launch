@@ -29,10 +29,6 @@ gender, district, and unrelated survey questions are not model inputs.
 
 ## Limitations
 
-- This is a Rwanda case study, not a model for every African country.
-- It describes employed youth and cannot predict whether someone will get a job.
-- It does not directly measure bootcamps, internships, certifications, or
-  detailed digital skills.
 - ICT observations are fewer than broad fields such as agriculture and
   elementary work, so ICT estimates require caution.
 - Earnings are self-reported, and removing extreme values narrows the model's
@@ -143,12 +139,6 @@ For a browser-based mobile preview:
 ```bash
 flutter run -d web-server --web-hostname 0.0.0.0 --web-port 3000
 ```
-
-For local Android emulator testing, use
-`--dart-define=API_BASE_URL=http://10.0.2.2:8000`. The app has one page, one
-input control for every model feature, a `Predict` button, and a result or error
-area. Related dropdowns update together, while both rural and urban remain
-available for every province.
 
 ## Project structure
 
