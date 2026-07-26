@@ -77,11 +77,11 @@ def income_band(prediction: float) -> str:
     if prediction < 20_000:
         return "Under 20,000 RWF"
     if prediction < 50_000:
-        return "20,000–49,999 RWF"
+        return "20,000-49,999 RWF"
     if prediction < 100_000:
-        return "50,000–99,999 RWF"
+        return "50,000-99,999 RWF"
     if prediction < 200_000:
-        return "100,000–199,999 RWF"
+        return "100,000-199,999 RWF"
     return "200,000 RWF and above"
 
 
