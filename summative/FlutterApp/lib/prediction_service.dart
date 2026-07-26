@@ -4,19 +4,18 @@ import 'package:http/http.dart' as http;
 
 class PredictionResult {
   const PredictionResult({
-    required this.incomeNgn,
+    required this.incomeRwf,
     required this.incomeBand,
     required this.programUse,
   });
 
-  final double incomeNgn;
+  final double incomeRwf;
   final String incomeBand;
   final String programUse;
 
   factory PredictionResult.fromJson(Map<String, dynamic> json) {
     return PredictionResult(
-      incomeNgn: (json['predicted_first_monthly_income_ngn_2018'] as num)
-          .toDouble(),
+      incomeRwf: (json['predicted_monthly_income_rwf'] as num).toDouble(),
       incomeBand: json['income_band'] as String,
       programUse: json['program_use'] as String,
     );

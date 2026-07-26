@@ -14,83 +14,76 @@ class PredictionPage extends StatefulWidget {
 class _PredictionPageState extends State<PredictionPage> {
   final _formKey = GlobalKey<FormState>();
   final _service = PredictionService();
-  final _graduationController = TextEditingController(text: '2017');
-  final _skillCountController = TextEditingController(text: '5');
+  final _ageController = TextEditingController(text: '24');
+  final _hoursController = TextEditingController(text: '40');
 
-  String _education = "Bachelor's degree";
-  String _course = 'Technology and computing';
-  String _jobLevel = 'Entry level';
-  String _sector = 'Technology and telecommunications';
-  String _qualification = 'Gave an advantage';
-  String _nysc = 'No';
-  int _preparationScore = 3;
-  bool _problemSolving = true;
-  bool _communication = true;
+  String _education = 'Upper secondary education';
+  String _career = 'ICT';
+  String _sector = 'Services';
+  String _employer = 'Private business or VUP';
+  String _contract = 'Written contract';
+  String _residence = 'Urban';
+  String _province = 'Kigali city';
   bool _loading = false;
   PredictionResult? _result;
   String? _error;
 
   static const educationLevels = [
-    'Ordinary National Diploma (OND)',
-    'Higher National Diploma (HND)',
-    "Bachelor's degree",
-    "Master's degree",
-    'MBA degree',
-    'PhD/Doctorate degree',
+    'No formal education',
+    'Pre-primary',
+    'Primary education',
+    'Lower secondary education',
+    'Upper secondary education',
+    'Tertiary education',
   ];
-  static const courseGroups = [
-    'Technology and computing',
-    'Engineering and built environment',
-    'Business and economics',
-    'Health and life sciences',
-    'Social sciences',
-    'Arts, communication and humanities',
-    'Law',
-    'Education',
+
+  static const careerFields = [
+    'ICT',
+    'Science and engineering',
+    'Education, health and social services',
+    'Business, management and office work',
+    'Sales and services',
+    'Skilled trades and operators',
+    'Agriculture',
+    'Elementary and other work',
+  ];
+
+  static const employerTypes = [
+    'Private business or VUP',
+    'Public institution',
+    'Public-private enterprise',
+    'Household',
+    'Cooperative',
+    'NGO or international organisation',
     'Other',
   ];
-  static const jobLevels = [
-    'Entry level',
-    'Clerical and administrative',
-    'Experienced/professional',
-    'Managerial',
-    'Executive',
+
+  static const provinces = [
+    'Kigali city',
+    'Eastern Province',
+    'Northern Province',
+    'Southern Province',
+    'Western Province',
   ];
-  static const sectors = [
-    'Technology and telecommunications',
-    'Finance and consulting',
-    'Engineering, construction and energy',
-    'Education',
-    'Health',
-    'Media, marketing and creative',
-    'Public and nonprofit',
-    'Trade and services',
-    'Other',
-  ];
-  static const qualificationRequirements = [
-    'Formal requirement',
-    'Gave an advantage',
-    'Not required',
-    'Unknown',
-  ];
+
   @override
   void dispose() {
-    _graduationController.dispose();
-    _skillCountController.dispose();
+    _ageController.dispose();
+    _hoursController.dispose();
     super.dispose();
   }
 
-  String? _validateInteger(
-    String? value, {
-    required int minimum,
-    required int maximum,
-    required String label,
-  }) {
+  String? _numberError(
+    String? value,
+    String label,
+    double minimum,
+    double maximum,
+  ) {
     if (value == null || value.trim().isEmpty) return '$label is required';
-    final number = int.tryParse(value);
-    if (number == null) return 'Enter a whole number';
+    final number = double.tryParse(value);
+    if (number == null) return 'Enter a number';
     if (number < minimum || number > maximum) {
-      return 'Use a value from $minimum to $maximum';
+      return 'Use a value from ${minimum.round()} to ${maximum.round()}';
     }
     return null;
   }
@@ -98,15 +91,7 @@ class _PredictionPageState extends State<PredictionPage> {
   Future<void> _predict() async {
     FocusScope.of(context).unfocus();
     if (!_formKey.currentState!.validate()) return;
-    final skillCount = int.parse(_skillCountController.text);
-    final selectedSkills = (_problemSolving ? 1 : 0) + (_communication ? 1 : 0);
-    if (skillCount < selectedSkills) {
-      setState(() {
-        _error = 'Skill count cannot be lower than the selected skill groups.';
-        _result = null;
-      });
-      return;
-    }
+
     setState(() {
       _loading = true;
       _error = null;
@@ -114,17 +99,15 @@ class _PredictionPageState extends State<PredictionPage> {
     });
 
     final payload = {
-      'graduation_year': int.parse(_graduationController.text),
+      'age': int.parse(_ageController.text),
       'education_level': _education,
-      'course_group': _course,
-      'first_job_level': _jobLevel,
-      'first_job_sector': _sector,
-      'qualification_requirement': _qualification,
-      'first_job_via_nysc': _nysc,
-      'course_preparation_score': _preparationScore,
-      'employability_skill_count': skillCount,
-      'problem_solving_skill': _problemSolving,
-      'communication_skill': _communication,
+      'career_field': _career,
+      'main_sector': _sector,
+      'employer_type': _employer,
+      'contract_type': _contract,
+      'weekly_hours': double.parse(_hoursController.text),
+      'residence': _residence,
+      'province': _province,
     };
 
     try {
@@ -153,105 +136,64 @@ class _PredictionPageState extends State<PredictionPage> {
                     key: _formKey,
                     child: Column(
                       children: [
-                        _section(
-                          '01',
-                          'Learning foundation',
-                          'Describe the education pathway before the first role.',
-                          [
-                            _pair(
-                              _integerField(
-                                _graduationController,
-                                'Graduation year',
-                                2013,
-                                2017,
-                              ),
-                              _dropdown(
-                                'Education level',
-                                _education,
-                                educationLevels,
-                                (value) => setState(() => _education = value),
-                              ),
-                            ),
-                            _dropdown(
-                              'Course family',
-                              _course,
-                              courseGroups,
-                              (value) => setState(() => _course = value),
-                            ),
-                            _dropdown(
-                              'How well the course prepared you',
-                              _preparationScore.toString(),
-                              const ['1', '2', '3', '4'],
-                              (value) => setState(
-                                () => _preparationScore = int.parse(value),
-                              ),
-                            ),
-                          ],
-                        ),
+                        _section('Education and direction', [
+                          _numberField(_ageController, 'Age', 16, 30),
+                          _dropdown(
+                            'Education level',
+                            _education,
+                            educationLevels,
+                            (value) => setState(() => _education = value),
+                          ),
+                          _dropdown(
+                            'Career field',
+                            _career,
+                            careerFields,
+                            (value) => setState(() => _career = value),
+                          ),
+                        ]),
                         const SizedBox(height: 18),
-                        _section(
-                          '02',
-                          'First opportunity',
-                          'Compare possible entry roles and sectors.',
-                          [
-                            _dropdown(
-                              'First-job level',
-                              _jobLevel,
-                              jobLevels,
-                              (value) => setState(() => _jobLevel = value),
-                            ),
-                            _dropdown(
-                              'Target sector',
-                              _sector,
-                              sectors,
-                              (value) => setState(() => _sector = value),
-                            ),
-                            _dropdown(
-                              'Qualification requirement',
-                              _qualification,
-                              qualificationRequirements,
-                              (value) => setState(() => _qualification = value),
-                            ),
-                            _dropdown(
-                              'First role came through NYSC',
-                              _nysc,
-                              const ['Yes', 'No', 'Not completed'],
-                              (value) => setState(() => _nysc = value),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 18),
-                        _section(
-                          '03',
-                          'Job-ready experience',
-                          'Describe the transferable skills from your studies.',
-                          [
-                            _integerField(
-                              _skillCountController,
-                              'Employability skills represented',
-                              0,
-                              6,
-                            ),
-                            _skillSwitch(
-                              'Problem-solving skill',
-                              'Ability to solve complex problems.',
-                              _problemSolving,
-                              (value) =>
-                                  setState(() => _problemSolving = value),
-                            ),
-                            _skillSwitch(
-                              'Communication skill',
-                              'Written or spoken communication.',
-                              _communication,
-                              (value) => setState(() => _communication = value),
-                            ),
-                          ],
-                        ),
+                        _section('Work pathway', [
+                          _dropdown(
+                            'Main sector',
+                            _sector,
+                            const ['Agriculture', 'Industry', 'Services'],
+                            (value) => setState(() => _sector = value),
+                          ),
+                          _dropdown(
+                            'Employer type',
+                            _employer,
+                            employerTypes,
+                            (value) => setState(() => _employer = value),
+                          ),
+                          _dropdown(
+                            'Contract type',
+                            _contract,
+                            const ['Oral agreement', 'Written contract'],
+                            (value) => setState(() => _contract = value),
+                          ),
+                          _numberField(
+                            _hoursController,
+                            'Usual weekly hours',
+                            1,
+                            118,
+                          ),
+                          _dropdown(
+                            'Residence',
+                            _residence,
+                            const ['Rural', 'Urban'],
+                            (value) => setState(() => _residence = value),
+                          ),
+                          _dropdown(
+                            'Province',
+                            _province,
+                            provinces,
+                            (value) => setState(() => _province = value),
+                          ),
+                        ]),
                         const SizedBox(height: 24),
                         SizedBox(
                           width: double.infinity,
                           child: FilledButton.icon(
-                            key: const Key('predictButton'),
                             onPressed: _loading ? null : _predict,
                             icon: _loading
                                 ? const SizedBox(
@@ -273,8 +215,12 @@ class _PredictionPageState extends State<PredictionPage> {
                         ),
                         const SizedBox(height: 18),
                         if (_result != null) _resultCard(_result!),
-                        if (_error != null) _errorCard(_error!),
-                        if (_result == null && _error == null) _emptyCard(),
+                        if (_error != null) _messageCard(_error!, true),
+                        if (_result == null && _error == null)
+                          _messageCard(
+                            'Your estimated monthly income will appear here.',
+                            false,
+                          ),
                       ],
                     ),
                   ),
@@ -304,7 +250,7 @@ class _PredictionPageState extends State<PredictionPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'AFRICAN GRADUATE PATHWAYS',
+                    'AFRICAN YOUTH CAREER PATHWAYS',
                     style: TextStyle(
                       color: Color(0xFFE6B557),
                       fontWeight: FontWeight.w800,
@@ -313,15 +259,15 @@ class _PredictionPageState extends State<PredictionPage> {
                   ),
                   const SizedBox(height: 18),
                   Text(
-                    'Learn skills.\nBuild experience.\nLaunch a career.',
+                    'Explore a path.\nBuild the skills.\nEnter the industry.',
                     style: Theme.of(
                       context,
-                    ).textTheme.displayLarge?.copyWith(fontSize: 44),
+                    ).textTheme.displayLarge?.copyWith(fontSize: 42),
                   ),
                   const SizedBox(height: 16),
                   const Text(
-                    'Explore how education, employability skills, '
-                    'and first-job choices relate to early career outcomes.',
+                    'Compare education and work pathways using a Rwanda '
+                    'Labour Force Survey income benchmark.',
                     style: TextStyle(
                       color: Color(0xFFDCE9E3),
                       height: 1.5,
@@ -337,12 +283,7 @@ class _PredictionPageState extends State<PredictionPage> {
     );
   }
 
-  Widget _section(
-    String number,
-    String title,
-    String note,
-    List<Widget> children,
-  ) {
+  Widget _section(String title, List<Widget> children) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -350,23 +291,11 @@ class _PredictionPageState extends State<PredictionPage> {
         color: const Color(0xFFFFFCF4),
         borderRadius: BorderRadius.circular(22),
         border: Border.all(color: const Color(0xFFE3DCCF)),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x110D2D25),
-            blurRadius: 22,
-            offset: Offset(0, 8),
-          ),
-        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            '$number  $title',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          const SizedBox(height: 5),
-          Text(note, style: const TextStyle(color: Color(0xFF6C756F))),
+          Text(title, style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 18),
           ...children.expand((child) => [child, const SizedBox(height: 14)]),
         ],
@@ -398,63 +327,24 @@ class _PredictionPageState extends State<PredictionPage> {
     );
   }
 
-  Widget _integerField(
+  Widget _numberField(
     TextEditingController controller,
     String label,
-    int minimum,
-    int maximum,
+    double minimum,
+    double maximum,
   ) {
     return TextFormField(
       controller: controller,
       keyboardType: TextInputType.number,
       decoration: InputDecoration(labelText: label),
-      validator: (value) => _validateInteger(
-        value,
-        minimum: minimum,
-        maximum: maximum,
-        label: label,
-      ),
-    );
-  }
-
-  Widget _skillSwitch(
-    String title,
-    String subtitle,
-    bool value,
-    ValueChanged<bool> onChanged,
-  ) {
-    return SwitchListTile.adaptive(
-      contentPadding: EdgeInsets.zero,
-      title: Text(title),
-      subtitle: Text(subtitle),
-      value: value,
-      activeTrackColor: GraduateLaunchApp.forest.withValues(alpha: .55),
-      onChanged: onChanged,
-    );
-  }
-
-  Widget _pair(Widget first, Widget second) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        if (constraints.maxWidth < 540) {
-          return Column(children: [first, const SizedBox(height: 14), second]);
-        }
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: first),
-            const SizedBox(width: 14),
-            Expanded(child: second),
-          ],
-        );
-      },
+      validator: (value) => _numberError(value, label, minimum, maximum),
     );
   }
 
   Widget _resultCard(PredictionResult result) {
-    final number = NumberFormat.currency(
-      locale: 'en_NG',
-      symbol: '₦',
+    final money = NumberFormat.currency(
+      locale: 'en',
+      symbol: 'RWF ',
       decimalDigits: 0,
     );
     return Container(
@@ -468,7 +358,7 @@ class _PredictionPageState extends State<PredictionPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'HISTORICAL FIRST-JOB BENCHMARK',
+            'ESTIMATED MONTHLY INCOME',
             style: TextStyle(
               color: Color(0xFFE6B557),
               fontWeight: FontWeight.w800,
@@ -477,14 +367,14 @@ class _PredictionPageState extends State<PredictionPage> {
           ),
           const SizedBox(height: 8),
           Text(
-            number.format(result.incomeNgn),
+            money.format(result.incomeRwf),
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
               color: Colors.white,
-              fontSize: 42,
+              fontSize: 40,
             ),
           ),
           Text(
-            'per month in 2018 · ${result.incomeBand}',
+            result.incomeBand,
             style: const TextStyle(color: Color(0xFFDCE9E3)),
           ),
           const Divider(height: 30, color: Color(0x557FA496)),
@@ -497,22 +387,15 @@ class _PredictionPageState extends State<PredictionPage> {
     );
   }
 
-  Widget _errorCard(String error) {
+  Widget _messageCard(String message, bool error) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFE8DF),
+        color: error ? const Color(0xFFFFE8DF) : Colors.transparent,
         borderRadius: BorderRadius.circular(18),
       ),
-      child: Text(error),
-    );
-  }
-
-  Widget _emptyCard() {
-    return const Padding(
-      padding: EdgeInsets.all(12),
-      child: Text('The first-job pathway benchmark will appear here.'),
+      child: Text(message),
     );
   }
 }

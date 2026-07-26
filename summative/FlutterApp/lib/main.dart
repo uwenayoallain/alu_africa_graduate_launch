@@ -21,7 +21,7 @@ class GraduateLaunchApp extends StatelessWidget {
     final displayTheme = GoogleFonts.frauncesTextTheme();
 
     return MaterialApp(
-      title: 'African Graduate Launch',
+      title: 'African Youth Career Pathways',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
