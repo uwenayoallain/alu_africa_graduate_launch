@@ -19,7 +19,7 @@ from API.schemas import (
     PredictionResponse,
     RetrainResponse,
 )
-from API.training import DATA_PATH, METADATA_PATH, MODEL_PATH, train_and_save
+from API.training import DATA_PATH, MAX_INCOME, METADATA_PATH, MIN_INCOME, MODEL_PATH, train_and_save
 
 model_state: dict[str, Any] = {"model": None, "metadata": {}}
 retrain_lock = threading.Lock()
@@ -111,7 +111,7 @@ def predict(payload: PredictionRequest) -> PredictionResponse:
             detail="Model is not available. Train it before requesting predictions.",
         )
     prediction = float(model.predict(request_frame(payload))[0])
-    prediction = min(370_000.0, max(6_000.0, prediction))
+    prediction = min(MAX_INCOME, max(MIN_INCOME, prediction))
     return PredictionResponse(
         predicted_monthly_income_rwf=round(prediction, 2),
         income_band=income_band(prediction),
