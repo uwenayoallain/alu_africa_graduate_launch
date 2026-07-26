@@ -1,80 +1,61 @@
 MODEL_FEATURES = [
-    "graduation_year",
+    "age",
     "education_level",
-    "course_group",
-    "first_job_level",
-    "first_job_sector",
-    "qualification_requirement",
-    "first_job_via_nysc",
-    "course_preparation_score",
-    "employability_skill_count",
-    "problem_solving_skill",
-    "communication_skill",
+    "career_field",
+    "main_sector",
+    "employer_type",
+    "contract_type",
+    "weekly_hours",
+    "residence",
+    "province",
 ]
 
-TARGET = "first_monthly_income_ngn"
+TARGET = "monthly_income_rwf"
 
-NUMERIC_FEATURES = [
-    "graduation_year",
-    "course_preparation_score",
-    "employability_skill_count",
-    "problem_solving_skill",
-    "communication_skill",
-]
+NUMERIC_FEATURES = ["age", "weekly_hours"]
 CATEGORICAL_FEATURES = [
     feature for feature in MODEL_FEATURES if feature not in NUMERIC_FEATURES
 ]
 
 EDUCATION_LEVELS = {
-    "Ordinary National Diploma (OND)",
-    "Higher National Diploma (HND)",
-    "Bachelor's degree",
-    "Master's degree",
-    "MBA degree",
-    "PhD/Doctorate degree",
+    "No formal education",
+    "Pre-primary",
+    "Primary education",
+    "Lower secondary education",
+    "Upper secondary education",
+    "Tertiary education",
 }
 
-COURSE_GROUPS = {
-    "Technology and computing",
-    "Engineering and built environment",
-    "Business and economics",
-    "Health and life sciences",
-    "Social sciences",
-    "Arts, communication and humanities",
-    "Law",
-    "Education",
+CAREER_FIELDS = {
+    "ICT",
+    "Science and engineering",
+    "Education, health and social services",
+    "Business, management and office work",
+    "Sales and services",
+    "Skilled trades and operators",
+    "Agriculture",
+    "Elementary and other work",
+}
+
+MAIN_SECTORS = {"Agriculture", "Industry", "Services"}
+
+EMPLOYER_TYPES = {
+    "Private business or VUP",
+    "Public institution",
+    "Public-private enterprise",
+    "Household",
+    "Cooperative",
+    "NGO or international organisation",
     "Other",
 }
 
-JOB_LEVELS = {
-    "Entry level",
-    "Clerical and administrative",
-    "Experienced/professional",
-    "Managerial",
-    "Executive",
-}
+CONTRACT_TYPES = {"Oral agreement", "Written contract"}
+RESIDENCE_TYPES = {"Rural", "Urban"}
 
-SECTOR_GROUPS = {
-    "Technology and telecommunications",
-    "Finance and consulting",
-    "Engineering, construction and energy",
-    "Education",
-    "Health",
-    "Media, marketing and creative",
-    "Public and nonprofit",
-    "Trade and services",
-    "Other",
-}
-
-QUALIFICATION_REQUIREMENTS = {
-    "Formal requirement",
-    "Gave an advantage",
-    "Not required",
-    "Unknown",
-}
-
-NYSC_PATHWAYS = {
-    "Yes",
-    "No",
-    "Not completed",
+PROVINCES = {
+    "Kigali city",
+    "Eastern Province",
+    "Northern Province",
+    "Southern Province",
+    "Western Province",
 }

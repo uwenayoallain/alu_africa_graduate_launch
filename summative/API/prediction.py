@@ -41,11 +41,11 @@ async def lifespan(_: FastAPI):
 
 
 app = FastAPI(
-    title="African Graduate Launch API",
+    title="African Youth Career Income API",
     version="1.0.0",
     description=(
-        "Estimates a historical first-job monthly income benchmark from education, "
-        "skills, internship signals, and a chosen early-career pathway."
+        "Estimates monthly employee income from a young person's education "
+        "and work pathway using Rwanda Labour Force Survey 2024 data."
     ),
     lifespan=lifespan,
 )
@@ -74,18 +74,14 @@ app.add_middleware(
 
 def income_band(prediction: float) -> str:
     if prediction < 20_000:
-        return "Under ₦20,000"
+        return "Under 20,000 RWF"
     if prediction < 50_000:
-        return "₦20,000–₦49,999"
+        return "20,000–49,999 RWF"
     if prediction < 100_000:
-        return "₦50,000–₦99,999"
-    if prediction < 150_000:
-        return "₦100,000–₦149,999"
+        return "50,000–99,999 RWF"
     if prediction < 200_000:
-        return "₦150,000–₦199,999"
-    if prediction < 250_000:
-        return "₦200,000–₦249,999"
-    return "₦250,000 and above"
+        return "100,000–199,999 RWF"
+    return "200,000 RWF and above"
 
 
 @app.get("/health", response_model=HealthResponse, tags=["Service"])
@@ -114,9 +110,9 @@ def predict(payload: PredictionRequest) -> PredictionResponse:
             detail="Model is not available. Train it before requesting predictions.",
         )
     prediction = float(model.predict(request_frame(payload))[0])
-    prediction = min(275_000.0, max(10_000.0, prediction))
+    prediction = min(370_000.0, max(6_000.0, prediction))
     return PredictionResponse(
-        predicted_first_monthly_income_ngn_2018=round(prediction, 2),
+        predicted_monthly_income_rwf=round(prediction, 2),
         income_band=income_band(prediction),
         model_name=metadata["model_name"],
         model_version=metadata["model_version"],

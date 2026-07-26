@@ -1,59 +1,57 @@
 {
-  "model_name": "SGDRegressor",
-  "model_version": "20260726T170100Z",
-  "trained_at": "2026-07-26T17:01:00.326827+00:00",
-  "selection_metric": "lowest held-out RMSE in 2018 Nigerian naira",
-  "training_rows": 1324,
-  "test_rows": 331,
-  "total_rows": 1655,
-  "target": "first_monthly_income_ngn",
+  "model_name": "Random Forest",
+  "model_version": "20260726T171716Z",
+  "trained_at": "2026-07-26T17:17:16.620414+00:00",
+  "selection_metric": "lowest test RMSE in Rwandan francs",
+  "training_rows": 5225,
+  "test_rows": 1307,
+  "total_rows": 6532,
+  "target": "monthly_income_rwf",
   "features": [
-    "graduation_year",
+    "age",
     "education_level",
-    "course_group",
-    "first_job_level",
-    "first_job_sector",
-    "qualification_requirement",
-    "first_job_via_nysc",
-    "course_preparation_score",
-    "employability_skill_count",
-    "problem_solving_skill",
-    "communication_skill"
+    "career_field",
+    "main_sector",
+    "employer_type",
+    "contract_type",
+    "weekly_hours",
+    "residence",
+    "province"
   ],
   "metrics": {
-    "LinearRegression": {
-      "rmse_ngn": 43792.378081521376,
-      "mae_ngn": 29979.49168078308,
-      "r2": 0.11838904944504902
+    "Ordinary Linear Regression": {
+      "rmse_rwf": 31021.811320902332,
+      "mae_rwf": 17935.959936364598,
+      "r2": 0.5513420098340476
     },
-    "SGDRegressor": {
-      "rmse_ngn": 43319.953926975206,
-      "mae_ngn": 29811.875931709048,
-      "r2": 0.13730776516425458
+    "Stochastic Gradient Descent": {
+      "rmse_rwf": 30957.54649139385,
+      "mae_rwf": 17964.36320343242,
+      "r2": 0.5531989654952485
     },
-    "DecisionTreeRegressor": {
-      "rmse_ngn": 46110.4349481572,
-      "mae_ngn": 32351.2384907236,
-      "r2": 0.022586452100558096
+    "Decision Tree": {
+      "rmse_rwf": 31793.677889346938,
+      "mae_rwf": 17667.795295796062,
+      "r2": 0.5287377609885324
     },
-    "RandomForestRegressor": {
-      "rmse_ngn": 43799.25304465841,
-      "mae_ngn": 30071.357979638637,
-      "r2": 0.11811221960327212
+    "Random Forest": {
+      "rmse_rwf": 30876.25449658742,
+      "mae_rwf": 16914.374956694006,
+      "r2": 0.5555424108284952
     }
   },
   "baseline": {
-    "training_median_ngn": 35000.0,
+    "training_median_rwf": 31200.0,
     "test_median_baseline": {
-      "rmse_ngn": 50049.82411817067,
-      "mae_ngn": 28731.117824773413,
-      "r2": -0.15155590884935943
+      "rmse_rwf": 49456.361666017634,
+      "mae_rwf": 26094.953849655703,
+      "r2": -0.14031655569561186
     }
   },
   "limitations": [
-    "The online survey is self-selected and is not a census of Nigerian graduates.",
-    "Income was reported in ranges and converted to documented band midpoints.",
-    "The 2018 naira benchmark is historical and must not be treated as a current salary quote.",
-    "Nigeria provides African evidence, but results cannot represent every African country."
+    "The model is a Rwanda case study and cannot represent every African country.",
+    "The survey records employment conditions, not a person's full skill portfolio.",
+    "The smallest and largest one percent of reported incomes were removed.",
+    "The estimate describes an association and is not a guaranteed salary."
   ]
 }
