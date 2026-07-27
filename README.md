@@ -5,6 +5,8 @@
 > This project studies how education and work pathways relate to employee income.
 > The result helps programs compare pathways; it does not judge a person's potential.
 
+## Video Demo
+[Demo Youtube Video Link](https://youtu.be/jF-d7flKxPk?si=RX66q4ueJoJqGAhY)
 ## Dataset
 
 The project uses the official
